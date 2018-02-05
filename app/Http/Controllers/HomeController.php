@@ -7,6 +7,7 @@ use Auth;
 use Redirect;
 use App\Orderitem;
 use App\Order;
+use App\User;
 
 class HomeController extends Controller
 {
@@ -28,7 +29,13 @@ class HomeController extends Controller
     public function index()
     {
         if(Auth::user()->role == 'admin'){
-            return view('admin.index');
+            $todaysorders = Order::whereDate('created_at',date('Y-m-d'))->orderBy('id','DESC')->get();
+            $allorders = Order::count();
+            $users = User::count();
+            $cancelledorders = Order::where('is_cancelled',1)->count();
+            $completedorders = Order::where('is_cancelled',0)->count();
+            $total = Orderitem::where('is_cancelled',0)->sum('amount');
+            return view('admin.index',compact('todaysorders','completedorders','allorders','users','cancelledorders','total'));
         }else if(Auth::user()->role == 'waiter'){
             $orders = Order::whereDate('created_at',date('Y-m-d'))->orderBy('id','DESC')->where('waiter_id',Auth::user()->id)->get();
             $myorders = Order::where('waiter_id',Auth::user()->id)->count();
