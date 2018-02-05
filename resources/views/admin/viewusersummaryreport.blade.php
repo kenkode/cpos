@@ -50,12 +50,11 @@
 
   <div class="content" style='margin-top:-70px;'>
 
-<div align="center"><strong>Summary report between {{$f}} and {{$t}}</strong></div><br>
+<div align="center"><strong>{{$user->name}} Summary report between {{$f}} and {{$t}}</strong></div><br>
     <table class="table tafter" border="1" cellspacing="0" cellpadding="0">
 
 
       <tr>
-                  <td><strong>#</strong></td>
                   <td><strong>User</strong></td>
                   <td><strong>Completed Orders</strong></td>
                   <td><strong>Cancelled Orders</strong></td>
@@ -66,7 +65,7 @@
       </tr>
 
       <?php $i = 1; $orders=0; $pending=0; $completed=0; $cancelled=0; $paid=0; $unpaid=0; $total=0;?>
-      @foreach($users as $user)
+  
       <?php 
                   $orders = $orders + App\User::getRangeOrders($user->id,$from,$to);
                   $completed = $completed + App\User::getRangeCompleted($user->id,$from,$to);
@@ -74,7 +73,6 @@
                   $total = $total + App\User::getRangeAmount($user->id,$from,$to);
                 ?>
       <tr>
-                  <td>{{$i}}</td>
                   <td>{{$user->name}}</td>
                   <td>{{App\User::getRangeCompleted($user->id,$from,$to)}}</td>
                   <td>{{App\User::getRangeCancelled($user->id,$from,$to)}}</td>
@@ -83,11 +81,8 @@
                   
                   
                 </tr>
-                <?php $i++;?>
-                @endforeach
                 <tr>
                   
-                  <td></td>
                   <td><strong>Total</strong></td>
                   <td><strong>{{$completed}}</strong></td>
                   <td><strong>{{$cancelled}}</strong></td>

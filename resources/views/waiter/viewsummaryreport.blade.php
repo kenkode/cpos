@@ -55,15 +55,17 @@
 
 
       <tr>
-                  <td><strong>Total Orders</strong></td>
+                  <td><strong>Completed Orders</strong></td>
                   <td><strong>Cancelled Orders</strong></td>
+                  <td><strong>Total Orders</strong></td>
                   <td><strong>Total Amount Held</strong></td>
                   
 
       </tr>
       <tr>
-                  <td>{{$orders}}</td>
+                  <td>{{$completed}}</td>
                   <td>{{$cancelled}}</td>
+                  <td>{{$orders}}</td>
                   <td>{{number_format($amount,2)}}</td>
                   
                   

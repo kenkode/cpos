@@ -1,5 +1,5 @@
 
-@extends('layouts.waiter')
+@extends('layouts.admin')
 @section('content')
 <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
@@ -7,7 +7,7 @@
     <section class="content-header">
       <h1>
         Summary
-        <small>My Summary</small>
+        <small>Users Summary</small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
@@ -22,7 +22,7 @@
         <div class="col-xs-12">
           <div class="box box-primary">
             <div class="box-header">
-              <h3 class="box-title">My Summary</h3>
+              <h3 class="box-title">{{$user->name}} Summary</h3>
             </div>
             <!-- /.box-header -->
             <div class="box-body">
@@ -48,30 +48,47 @@
           @endif
             <!-- /.box-header -->
             <!-- form start -->
-            <a class="btn btn-warning btn-sm" href="{{ URL::to('waiter/summary/report')}}">Report</a>
+            <a class="btn btn-warning btn-sm" href="{{URL::to('admin/user/summary/report/'.$user->id)}}">Report</a>
             <br><br>
             <table id="example1" class="table table-bordered table-hover">
                 <thead>
                 <tr>
+                  <th>Waiter</th>
                   <th>Completed Orders</th>
                   <th>Cancelled Orders</th>
                   <th>Total Orders</th>
                   <th>Total Amount Held</th>
-                 
                 </tr>
                 </thead>
                 <tbody>
-                
+                <?php $i = 1; $orders=0; $pending=0; $completed=0; $cancelled=0; $paid=0; $unpaid=0; $total=0;?>
+                <?php 
+                  $orders = $orders + App\User::getOrders($user->id);
+                  $completed = $completed + App\User::getCompleted($user->id);
+                  $cancelled = $cancelled + App\User::getCancelled($user->id);
+                  $total = $total + App\User::getAmount($user->id);
+                ?>
                 <tr>
-                  <td>{{$completed}}</td>
-                  <td>{{$cancelled}}</td>
-                  <td>{{$orders}}</td>
-                  <td>{{number_format($amount,2)}}</td>
+                  <td>{{$user->name}}</td>
+                  <td>{{App\User::getCompleted($user->id)}}</td>
+                  <td>{{App\User::getCancelled($user->id)}}</td>
+                  <td>{{App\User::getOrders($user->id)}}</td>
+                  <td>{{number_format(App\User::getAmount($user->id),2)}}</td>
                   
                   
                 </tr>
                 
                 </tbody>
+
+                <tfoot>
+                  
+                  <td></td>
+                  <td>{{$completed}}</td>
+                  <td>{{$cancelled}}</td>
+                  <td>{{$orders}}</td>
+                  <td>{{number_format($total,2)}}</td>
+
+                </tfoot>
               
 
               </table>

@@ -165,3 +165,6 @@ Route::post('/kitchen/orders/report', 'KitchenController@getreport');
 
 Route::get('/admin/summary/report', 'AdminController@summaryreport');
 Route::post('/admin/summary/report', 'AdminController@getsummaryreport');
+Route::get('/admin/user/summary/{id}', 'AdminController@usersummary');
+Route::get('/admin/user/summary/report/{id}', 'AdminController@usersummaryreport');
+Route::post('/admin/user/summary/report/{id}', 'AdminController@getusersummaryreport');

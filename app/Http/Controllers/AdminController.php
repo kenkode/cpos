@@ -34,6 +34,12 @@ class AdminController extends Controller
             return view('admin.summary',compact('users'));
     }
 
+    public function usersummary($id){
+            $user = User::find($id);
+            
+            return view('admin.usersummary',compact('user'));
+    }
+
     public function foodtemplate($id){
         $foods = Food::where('foodcategory_id',$id)->get();
         $foodcategory = Foodcategory::where('id',$id)->first();
@@ -552,7 +558,7 @@ class AdminController extends Controller
               });
 
               $sheet->row(5, array(
-              '#','WAITER','TOTAL ORDERS', 'CANCELLED ORDERS', 'TOTAL AMOUNT HELD'
+              '#','WAITER','COMPLETED ORDERS', 'CANCELLED ORDERS', 'TOTAL ORDERS', 'TOTAL AMOUNT HELD'
               ));
 
               $sheet->row(5, function ($r) {
@@ -575,18 +581,19 @@ class AdminController extends Controller
              for($i=0; $i<count($users); $i++) {
 
                   $orders = $orders + User::getRangeOrders($users[$i]->id,$from,$to);
+                  $completed = $completed + User::getRangeCompleted($users[$i]->id,$from,$to);
                   $cancelled = $cancelled + User::getRangeCancelled($users[$i]->id,$from,$to);
                   $total = $total + User::getRangeAmount($users[$i]->id,$from,$to);
                 
             
              $sheet->row($row, array(
-             ($i+1),$users[$i]->name,User::getRangeOrders($users[$i]->id,$from,$to),User::getRangeCancelled($users[$i]->id,$from,$to),User::getRangeAmount($users[$i]->id,$from,$to)
+             ($i+1),$users[$i]->name,User::getRangeCompleted($users[$i]->id,$from,$to),User::getRangeCancelled($users[$i]->id,$from,$to),User::getRangeOrders($users[$i]->id,$from,$to),User::getRangeAmount($users[$i]->id,$from,$to)
              ));
              $row++;
              }
 
              $sheet->row($row, array(
-             '','Total',$orders,$cancelled,$total
+             '','Total',$completed,$cancelled,$orders,$total
              ));
             $sheet->row($row, function ($r) {
 
@@ -633,6 +640,142 @@ class AdminController extends Controller
         PDF::Output('summary_'.$f.'_'.$t.'.pdf');
         }
     }
+    
+    public function usersummaryreport($id){
+        return view('admin.usersummaryreport',compact('id'));
+    }
 
+    public function getusersummaryreport(Request $request, $id){
+        if($request->type == 'excel'){
+
+        $user = User::find($id);
+
+        $time = strtotime(date('Y-m-d',strtotime($request->from)).' 00:00:00');
+        $time1 = strtotime(date('Y-m-d',strtotime($request->to)).' 23:59:59');
+
+        $from = date('Y-m-d H:i:s',$time);
+        $to = date('Y-m-d H:i:s',$time1);
+
+        $f = $request->from;
+        $t = $request->to;
+
+        Excel::create($user->name.'_Summary_Report_'.$f.'_'.$t, function($excel) use ($from, $to, $f, $t, $user) {
+
+        require_once(base_path()."/vendor/phpoffice/phpexcel/Classes/PHPExcel/NamedRange.php");
+        require_once(base_path()."/vendor/phpoffice/phpexcel/Classes/PHPExcel/IOFactory.php");
+
+
+       $objPHPExcel = new PHPExcel(); 
+       // Set the active Excel worksheet to sheet 0
+       $objPHPExcel->setActiveSheetIndex(0); 
+    
+
+        $excel->sheet('Summary Report', function($sheet) use ($from, $to, $f, $t, $user){
+            $users = User::where('role','waiter')->get();
+
+            $organization = Setting::find(1);
+               $sheet->row(1, array(
+              'Organization: ',$organization->name
+              ));
+              
+              $sheet->cell('A1', function($cell) {
+
+               // manipulate the cell
+                $cell->setFontWeight('bold');
+
+              });
+
+              $sheet->mergeCells('A3:E3');
+              $sheet->row(3, array(
+              $user->name.' SUMMARY REPORT BETWEEN '.$f.' AND '.$t
+              ));
+
+              $sheet->row(3, function($cell) {
+
+               // manipulate the cell
+                $cell->setAlignment('center');
+                $cell->setFontWeight('bold');
+
+              });
+
+              $sheet->row(5, array(
+              'WAITER','COMPLETED ORDERS', 'CANCELLED ORDERS', 'TOTAL ORDERS', 'TOTAL AMOUNT HELD'
+              ));
+
+              $sheet->row(5, function ($r) {
+
+             // call cell manipulation methods
+              $r->setFontWeight('bold');
+ 
+              });
+               
+            $row = 6;
+            $orders=0; 
+            $pending=0; 
+            $completed=0; 
+            $cancelled=0; 
+            $paid=0; 
+            $unpaid=0; 
+            $total=0;
+
+            $orders = $orders + User::getRangeOrders($user->id,$from,$to);
+            $completed = $completed + User::getRangeCompleted($user->id,$from,$to);
+            $cancelled = $cancelled + User::getRangeCancelled($user->id,$from,$to);
+            $total = $total + User::getRangeAmount($user->id,$from,$to);
+                
+            
+             $sheet->row($row, array(
+             $user->name,User::getRangeCompleted($user->id,$from,$to),User::getRangeCancelled($user->id,$from,$to),User::getRangeOrders($user->id,$from,$to),User::getRangeAmount($user->id,$from,$to)
+             ));
+             
+
+             $sheet->row(7, array(
+             'Total',$completed,$cancelled,$orders,$total
+             ));
+            $sheet->row(7, function ($r) {
+
+            // call cell manipulation methods
+            $r->setFontWeight('bold');
+
+            });       
+
+             
+    });
+
+  })->download('xls');
+
+        }else{
+        $time = strtotime(date('Y-m-d',strtotime($request->from)).' 00:00:00');
+        $time1 = strtotime(date('Y-m-d',strtotime($request->to)).' 23:59:59');
+
+        $from = date('Y-m-d H:i:s',$time);
+        $to = date('Y-m-d H:i:s',$time1);
+
+        $f = $request->from;
+        $t = $request->to;
+
+        $user = User::find($id);
+        $organization = Setting::find(1);
+        $view = \View::make('admin.viewusersummaryreport',compact('user','organization','f','t','from','to'));
+        $html = $view->render();
+
+        PDF::setFooterCallback(function($pdf) {
+
+        // Position at 15 mm from bottom
+        $pdf->SetY(-15);
+        // Set font
+        $pdf->SetFont('helvetica', 'I', 8);
+        // Page number
+        $pdf->Cell(0, 10, 'Page '.$pdf->getAliasNumPage().'/'.$pdf->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
+
+        });
+
+        //$pdf = new TCPDF();
+        PDF::SetTitle('Summary');
+        PDF::AddPage('L');
+        PDF::writeHTML($html, true, false, true, false, '');
+        PDF::Output('summary_'.$f.'_'.$t.'.pdf');
+        }
+    }
 
 }

@@ -36,8 +36,9 @@ class WaiterController extends Controller
       
             $orders = Order::where('waiter_id',Auth::user()->id)->count();
             $cancelled = Order::where('waiter_id',Auth::user()->id)->where('is_cancelled',1)->count();
+            $completed = Order::where('waiter_id',Auth::user()->id)->where('is_cancelled',0)->count();
             $amount = Orderitem::where('waiter_id',Auth::user()->id)->where('is_cancelled',0)->sum('amount');
-            return view('waiter.summary',compact('orders','cancelled','amount'));
+            return view('waiter.summary',compact('orders','cancelled','amount','completed'));
     }
 
     public function orderitems($id){
@@ -313,6 +314,7 @@ class WaiterController extends Controller
         $excel->sheet('My Summary Report', function($sheet) use ($from, $to, $f, $t){
             $orders = Order::where('waiter_id',Auth::user()->id)->whereBetween('created_at', array($from, $to))->count();
             $cancelled = Order::where('waiter_id',Auth::user()->id)->whereBetween('created_at', array($from, $to))->where('is_cancelled',1)->count();
+            $completed = Order::where('waiter_id',Auth::user()->id)->whereBetween('created_at', array($from, $to))->where('is_cancelled',0)->count();
             $amount = Orderitem::where('waiter_id',Auth::user()->id)->whereBetween('created_at', array($from, $to))->where('is_cancelled',0)->sum('amount');
               $organization = Setting::find(1);
 
@@ -341,7 +343,7 @@ class WaiterController extends Controller
               });
 
               $sheet->row(5, array(
-              'TOTAL ORDERS', 'CANCELLED ORDERS', 'TOTAL AMOUNT HELD'
+              'COMPLETED ORDERS', 'CANCELLED ORDERS', 'TOTAL ORDERS', 'TOTAL AMOUNT HELD'
               ));
 
               $sheet->row(5, function ($r) {
@@ -356,7 +358,7 @@ class WaiterController extends Controller
 
     
              $sheet->row($row, array(
-             $orders,$cancelled,$amount
+             $completed,$cancelled,$orders,$amount
              ));
        
              
@@ -376,9 +378,10 @@ class WaiterController extends Controller
 
         $orders = Order::where('waiter_id',Auth::user()->id)->whereBetween('created_at', array($from, $to))->count();
         $cancelled = Order::where('waiter_id',Auth::user()->id)->whereBetween('created_at', array($from, $to))->where('is_cancelled',1)->count();
+        $completed = Order::where('waiter_id',Auth::user()->id)->whereBetween('created_at', array($from, $to))->where('is_cancelled',0)->count();
         $amount = Orderitem::where('waiter_id',Auth::user()->id)->whereBetween('created_at', array($from, $to))->where('is_cancelled',0)->sum('amount');
         $organization = Setting::find(1);
-        $view = \View::make('waiter.viewsummaryreport',compact('orders','cancelled','amount','organization','f','t'));
+        $view = \View::make('waiter.viewsummaryreport',compact('orders','completed','cancelled','amount','organization','f','t'));
         $html = $view->render();
 
         PDF::setFooterCallback(function($pdf) {

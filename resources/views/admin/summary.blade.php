@@ -22,7 +22,7 @@
         <div class="col-xs-12">
           <div class="box box-primary">
             <div class="box-header">
-              <h3 class="box-title">My Summary</h3>
+              <h3 class="box-title">Users Summary</h3>
             </div>
             <!-- /.box-header -->
             <div class="box-body">
@@ -55,10 +55,11 @@
                 <tr>
                   <th>#</th>
                   <th>Waiter</th>
-                  <th>Total Orders</th>
+                  <th>Completed Orders</th>
                   <th>Cancelled Orders</th>
+                  <th>Total Orders</th>
                   <th>Total Amount Held</th>
-                 
+                  <th>Action</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -66,17 +67,31 @@
                 @foreach($users as $user)
                 <?php 
                   $orders = $orders + App\User::getOrders($user->id);
+                  $completed = $completed + App\User::getCompleted($user->id);
                   $cancelled = $cancelled + App\User::getCancelled($user->id);
                   $total = $total + App\User::getAmount($user->id);
                 ?>
                 <tr>
                   <td>{{$i}}</td>
                   <td>{{$user->name}}</td>
-                  <td>{{App\User::getOrders($user->id)}}</td>
+                  <td>{{App\User::getCompleted($user->id)}}</td>
                   <td>{{App\User::getCancelled($user->id)}}</td>
+                  <td>{{App\User::getOrders($user->id)}}</td>
                   <td>{{number_format(App\User::getAmount($user->id),2)}}</td>
                   
-                  
+                  <td>
+                  <div class="btn-group">
+                  <button type="button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                    Action <span class="caret"></span>
+                  </button>
+          
+                  <ul class="dropdown-menu" role="menu">
+                    <li><a href="{{URL::to('admin/user/summary/'.$user->id)}}">View</a></li>
+                    <li><a href="{{URL::to('admin/user/summary/report/'.$user->id)}}">Report</a></li>
+                  </ul>
+              </div>
+
+                    </td>
                 </tr>
                 <?php $i++; ?>
                 @endforeach
@@ -87,8 +102,9 @@
                   
                   <td></td>
                   <td></td>
-                  <td>{{$orders}}</td>
+                  <td>{{$completed}}</td>
                   <td>{{$cancelled}}</td>
+                  <td>{{$orders}}</td>
                   <td>{{number_format($total,2)}}</td>
 
                 </tfoot>

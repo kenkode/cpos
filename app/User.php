@@ -52,7 +52,7 @@ class User extends Authenticatable
     }
 
     public static function getCompleted($id){
-        $completed = Order::where('waiter_id',$id)->where('is_complete',1)->count();
+        $completed = Order::where('waiter_id',$id)->where('is_cancelled',0)->count();
         return $completed;
     }
 
@@ -87,7 +87,7 @@ class User extends Authenticatable
     }
 
     public static function getRangeCompleted($id,$from,$to){
-        $completed = Order::where('waiter_id',$id)->whereBetween('created_at', array($from, $to))->where('is_complete',1)->count();
+        $completed = Order::where('waiter_id',$id)->whereBetween('created_at', array($from, $to))->where('is_cancelled',0)->count();
         return $completed;
     }
 
