@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Be right back.</title>
+        <title>Error.</title>
 
         <link href="https://fonts.googleapis.com/css?family=Lato:100" rel="stylesheet" type="text/css">
 
@@ -14,9 +14,9 @@
                 margin: 0;
                 padding: 0;
                 width: 100%;
-                color: #B0BEC5;
+                color: #000;
                 display: table;
-                font-weight: 100;
+                font-weight: 600;
                 font-family: 'Lato', sans-serif;
             }
 
@@ -32,7 +32,7 @@
             }
 
             .title {
-                font-size: 72px;
+                font-size: 50px;
                 margin-bottom: 40px;
             }
         </style>
@@ -40,7 +40,8 @@
     <body>
         <div class="container">
             <div class="content">
-                <div class="title">Be right back.</div>
+                <div><img src="{{asset('images/Alert-icon.png')}}" width="100" height="100"></div>
+                <div class="title">An error has occured! Please contact your system administrator.</div>
             </div>
         </div>
     </body>

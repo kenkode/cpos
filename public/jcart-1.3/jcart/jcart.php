@@ -503,7 +503,7 @@ class Jcart {
 
 		// If this is the checkout hide the cart checkout button
 		if($this->itemCount > 0){
-		echo tab(7) . "<tr><td colspan='6' style='font-size:20px' align='right'><span id='jcart-subtotal'>{$config['text']['subtotal']}: <strong>$currencySymbol" . number_format($this->subtotal, $priceFormat['decimals'], $priceFormat['dec_point'], $priceFormat['thousands_sep']) . "</strong></span>\n";
+		echo tab(7) . "<tr><td colspan='6' style='font-size:20px;' align='right'><span id='jcart-subtotal'>{$config['text']['subtotal']}: <strong>$currencySymbol" . number_format($this->subtotal, $priceFormat['decimals'], $priceFormat['dec_point'], $priceFormat['thousands_sep']) . "</strong></span>\n";
 		echo tab(7) . "<input type='hidden' id='jcartSubtotal' name='jcartSubtotal' value='".number_format($this->subtotal, $priceFormat['decimals'], $priceFormat['dec_point'], $priceFormat['thousands_sep'])."' />\n";
 		    "</td>\n";
             "</tr>\n";

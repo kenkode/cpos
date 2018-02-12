@@ -22,6 +22,11 @@ Route::get('/', function () {
     }
 });
 
+Route::get('/503', function () {
+    
+        return view('errors.503');
+});
+
 Route::get('/login', function () {
 	if (Auth::user()) {
 

@@ -26,7 +26,7 @@ require public_path()."/jcart-1.3/jcart/jcart.php";
     <br />
     <section class="container">
         <div class="row">
-            <div class="col-md-8" style="width: 700px !important">
+            <div class="col-md-8" style="max-width: 700px !important">
                 <div class="panel panel-default">
                     <div class="panel-heading" style="background: #2389bb; color: #fff">
                         Menu
@@ -129,7 +129,7 @@ require public_path()."/jcart-1.3/jcart/jcart.php";
                 
             </div>
             
-            <aside class="col-lg-4 col-md-4 col-sm-12" style="width:450px !important; margin-left: -15px">
+            <aside class="col-lg-4 col-md-4 col-sm-12" style="max-width:450px !important; margin-left: -15px">
                 
                 <!-- Cart submit form -->
                 <!-- <form action="{{URL::to('results')}}" method="POST" > 
