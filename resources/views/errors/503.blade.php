@@ -42,6 +42,7 @@
             <div class="content">
                 <div><img src="{{asset('images/Alert-icon.png')}}" width="100" height="100"></div>
                 <div class="title">An error has occured! Please contact your system administrator.</div>
+                <a href="{{URL::to('/')}}">Go back to system</a>
             </div>
         </div>
     </body>
