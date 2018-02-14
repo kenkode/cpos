@@ -92,10 +92,76 @@ class SettingsController extends Controller
               });
 
               $sheet->row(6, array(
-              'FOOT NOTE : ',$organization->receipt_footer 
+              'TEL # : ',$organization->phone 
               ));
 
               $sheet->cell('A6', function($cell) {
+
+               // manipulate the cell
+                $cell->setFontWeight('bold');
+
+              });
+
+              $sheet->row(7, array(
+              'KRA PIN : ',$organization->pin 
+              ));
+
+              $sheet->cell('A7', function($cell) {
+
+               // manipulate the cell
+                $cell->setFontWeight('bold');
+
+              });
+
+              $sheet->row(8, array(
+              'VAT # : ',$organization->vat_no 
+              ));
+
+              $sheet->cell('A8', function($cell) {
+
+               // manipulate the cell
+                $cell->setFontWeight('bold');
+
+              });
+
+              $sheet->row(9, array(
+              'VAT : ',$organization->vat.'%' 
+              ));
+
+              $sheet->cell('A9', function($cell) {
+
+               // manipulate the cell
+                $cell->setFontWeight('bold');
+
+              });
+
+              $sheet->row(10, array(
+              'KRA/ETR : ',$organization->kra_etr 
+              ));
+
+              $sheet->cell('A10', function($cell) {
+
+               // manipulate the cell
+                $cell->setFontWeight('bold');
+
+              });
+
+              $sheet->row(11, array(
+              'SERIAL # : ',$organization->serial_no 
+              ));
+
+              $sheet->cell('A11', function($cell) {
+
+               // manipulate the cell
+                $cell->setFontWeight('bold');
+
+              });
+
+              $sheet->row(12, array(
+              'FOOT NOTE : ',$organization->receipt_footer 
+              ));
+
+              $sheet->cell('A12', function($cell) {
 
                // manipulate the cell
                 $cell->setFontWeight('bold');

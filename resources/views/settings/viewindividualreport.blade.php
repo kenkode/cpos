@@ -70,8 +70,50 @@
 
         <tr>
         
-        <td width="200"><strong>Foot note : </strong></td>
+        <td width="200"><strong>Address : </strong></td>
         <td>{{$organization->address}}</td>
+       
+        </tr>
+
+        <tr>
+        
+        <td width="200"><strong>Tel # : </strong></td>
+        <td>{{$organization->phone}}</td>
+       
+        </tr>
+
+        <tr>
+        
+        <td width="200"><strong>KRA Pin : </strong></td>
+        <td>{{$organization->pin}}</td>
+       
+        </tr>
+
+        <tr>
+        
+        <td width="200"><strong>VAT # : </strong></td>
+        <td>{{$organization->vat_no}}</td>
+       
+        </tr>
+
+        <tr>
+        
+        <td width="200"><strong>VAT : </strong></td>
+        <td>{{$organization->vat}}%</td>
+       
+        </tr>
+
+        <tr>
+        
+        <td width="200"><strong>KRA/ETR : </strong></td>
+        <td>{{$organization->kra_etr}}</td>
+       
+        </tr>
+
+        <tr>
+        
+        <td width="200"><strong>Serial # : </strong></td>
+        <td>{{$organization->serial_no}}</td>
        
         </tr>
 
