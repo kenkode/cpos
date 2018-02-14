@@ -125,7 +125,7 @@ class WaiterController extends Controller
         // Position at 15 mm from bottom
         $pdf->SetY(-15);
         // Set font
-        $pdf->SetFont('helvetica', 'I', 8);
+        $pdf->SetFont('helvetica', 'I', 6);
         // Page number
         $pdf->Cell(0, 10, $organization->receipt_footer, 0, false, 'C', 0, '', 0, false, 'T', 'M');
 
@@ -133,7 +133,7 @@ class WaiterController extends Controller
 
         //$pdf = new TCPDF();
         PDF::SetTitle('Receipt');
-        PDF::AddPage('P','A6');
+        PDF::AddPage('P','A7');
         PDF::writeHTML($html, true, false, true, false, '');
         PDF::Output($order->order_no.'_receipt.pdf');
     }

@@ -152,6 +152,12 @@ class SettingsController extends Controller
 
 		$setting->name  = $request->name;
     $setting->address  = $request->address;
+    $setting->phone  = $request->phone;
+    $setting->pin  = $request->pin;
+    $setting->vat_no  = $request->vat_no;
+    $setting->vat  = $request->vat;
+    $setting->kra_etr  = $request->kra_etr;
+    $setting->serial_no  = $request->serial_no;
 		$setting->receipt_footer  = $request->receipt;
 
 		$setting->update();

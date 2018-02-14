@@ -88,13 +88,43 @@
                 </div>
 
                 <div class="form-group">
-                  <label for="exampleInputEmail1">Name</label>
+                  <label for="exampleInputEmail1">Name <span style="color: red">*</span></label>
                   <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Enter name" style="width: 30%" value="{{$setting->name}}" name="name" required="">
+                </div>
+
+                <div class="form-group">
+                  <label for="exampleInputEmail1">Telephone <span style="color: red">*</span></label>
+                  <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Enter telephone number" style="width: 30%" value="{{$setting->phone}}" name="phone" required="">
                 </div>
 
                 <div class="form-group">
                   <label>Address</label>
                   <textarea class="form-control" style="width: 30%" name="address" rows="3" placeholder="Enter Address...">{{$setting->address}}</textarea>
+                </div>
+
+                <div class="form-group">
+                  <label for="exampleInputEmail1">KRA Pin <span style="color: red">*</span></label>
+                  <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Enter kra pin" style="width: 30%" value="{{$setting->pin}}" name="pin" required="">
+                </div>
+
+                <div class="form-group">
+                  <label for="exampleInputEmail1">VAT Number <span style="color: red">*</span></label>
+                  <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Enter VAT number" style="width: 30%" value="{{$setting->vat_no}}" name="vat_no" required="">
+                </div>
+
+                <div class="form-group">
+                  <label for="exampleInputEmail1">VAT % <span style="color: red">*</span></label>
+                  <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Enter VAT %" style="width: 30%" value="{{$setting->vat}}" name="vat" required="">
+                </div>
+
+                <div class="form-group">
+                  <label for="exampleInputEmail1">KRA/ETR Number <span style="color: red">*</span></label>
+                  <input type="text" class="form-control" id="exampleInputEmail1" placeholder="KRA/ETR Number" style="width: 30%" value="{{$setting->kra_etr}}" name="kra_etr" required="">
+                </div>
+
+                <div class="form-group">
+                  <label for="exampleInputEmail1">Serial Number <span style="color: red">*</span></label>
+                  <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Enter serial Number" style="width: 30%" value="{{$setting->serial_no}}" name="serial_no" required="">
                 </div>
 
                 <div class="form-group">
