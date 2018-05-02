@@ -352,6 +352,41 @@ class AdminController extends Controller
         }
     }
 
+    public function client($id){
+        return view('admin.client',compact('id'));
+    }
+
+    public function invoice(Request $request, $id){
+        
+        $order = Order::find($id);
+        $name = $request->name;
+        $phone = $request->phone;
+        $email = $request->email;
+        $addr = $request->address;
+        $orderitems = Orderitem::where('order_id',$id)->get();
+        $organization = Setting::find(1);
+        $view = \View::make('admin.invoices',compact('order','orderitems','id','organization','name','phone','email','addr'));
+        $html = $view->render();
+
+        PDF::setFooterCallback(function($pdf) {
+
+        // Position at 15 mm from bottom
+        $pdf->SetY(-15);
+        // Set font
+        $pdf->SetFont('helvetica', 'I', 8);
+        // Page number
+        $pdf->Cell(0, 10, 'Page '.$pdf->getAliasNumPage().'/'.$pdf->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
+
+        });
+
+        //$pdf = new TCPDF();
+        PDF::SetTitle('Invoice-'.$order->order_no);
+        PDF::AddPage('p');
+        PDF::writeHTML($html, true, false, true, false, '');
+        PDF::Output('invoice_'.$order->order_no.'.pdf');
+        
+    }
+
     public function paymentsreport(){
         return view('admin.paymentsreport');
     }

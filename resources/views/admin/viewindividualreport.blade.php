@@ -81,7 +81,7 @@
                 @endif
                 <tr>
                   <td>{{$i}}</td>
-                  <td><img src="{{asset('images/'.App\Food::getFood($orderitem->food_id)->image)}}" width="50" height="50" /></td>
+                  <td><img src="{{str_replace(' ','%20', asset('/images/'.App\Food::getFood($orderitem->food_id)->image))}}" width="50" height="50" /></td>
                   <td>{{App\Food::getFood($orderitem->food_id)->name}}</td>
                   <td>{{App\Foodcategory::getName($orderitem->food_id)}}</td>
                   <td>{{$orderitem->size}}</td>

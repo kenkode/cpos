@@ -147,6 +147,8 @@ Route::post('/admin/orders/report', 'AdminController@getreport');
 Route::get('/admin/orders/individual/report/{id}', 'AdminController@individualreport');
 Route::post('/admin/orders/individual/report/{id}', 'AdminController@getindividualreport');
 Route::get('/receipt/{id}', 'WaiterController@receipt');
+Route::get('/invoice/{id}', 'AdminController@client');
+Route::post('/invoice/{id}', 'AdminController@invoice');
 Route::get('/admin/orders/payments', 'AdminController@payments');
 Route::get('/admin/orders/payments/report', 'AdminController@paymentsreport');
 Route::post('/admin/orders/payments/report', 'AdminController@getpaymentsreport');

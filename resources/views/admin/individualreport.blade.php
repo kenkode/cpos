@@ -11,7 +11,7 @@
       </h1>
       <ol class="breadcrumb">
         <li><a href="{{URL::to('/dashboard')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="{{URL::to('/orders')}}"><i class="fa fa-users"></i> Order</a></li>
+        <li><a href="{{URL::to('/orders')}}"><i class="fa fa-shopping-cart"></i> Order</a></li>
         <li class="active">Report</li>
       </ol>
     </section>

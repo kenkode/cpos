@@ -103,6 +103,7 @@
                   <ul class="dropdown-menu" role="menu">
                     <li><a href="{{URL::to('admin/order/show/'.$order->id)}}">View</a></li>
                     <li><a href="{{URL::to('receipt/'.$order->id)}}" target="_blank">Print Receipt</a></li>
+                    <li><a href="{{URL::to('invoice/'.$order->id)}}" target="_blank">Invoice</a></li>
                     @if($order->is_cancelled == 0)
                     <li><a href="{{URL::to('/kitchen/order/cancel/'.$order->id)}}" onclick="return (confirm('Are you sure you want to cancel this order?'))">Cancel</a></li>
                     @elseif($order->is_cancelled == 1)
