@@ -92,7 +92,9 @@
                   <ul class="dropdown-menu" role="menu">
                     <li><a href="{{URL::to('order/show/'.$order->id)}}">View</a></li>
                     <li><a href="{{URL::to('receipt/'.$order->id)}}" target="_blank">Print Receipt</a></li>
+                    @if($order->is_paid == 0 && $order->is_cancelled == 0)
                     <li><a href="{{URL::to('order/cancel/'.$order->id)}}" onclick="return (confirm('Are you sure you want to cancel this order?'))">Cancel</a></li>
+                    @endif
                     <li><a href="{{URL::to('waiter/orders/individual/report/'.$order->id)}}">Report</a></li>
                   </ul>
               </div>

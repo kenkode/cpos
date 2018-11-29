@@ -75,7 +75,7 @@ class KitchenController extends Controller
     public function returnorder($id){
       $order = Order::find($id);
       $order->is_cancelled = 0;
-      $order->is_paid = 1;
+      $order->is_paid = 0;
       $order->update();
 
       return redirect()->back()->withFlashMessage('Order Successfully Returned!');

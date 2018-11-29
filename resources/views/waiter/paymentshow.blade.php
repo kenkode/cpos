@@ -1,5 +1,5 @@
 
-@extends('layouts.admin')
+@extends('layouts.waiter')
 @section('content')
 <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
@@ -11,7 +11,7 @@
       </h1>
       <ol class="breadcrumb">
         <li><a href="{{URL::to('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="{{URL::to('/admin/orders')}}"><i class="fa fa-shopping-cart"></i>Orders</a></li>
+        <li><a href="{{URL::to('/waiter/orders')}}"><i class="fa fa-shopping-cart"></i>Orders</a></li>
         <li class="active">Show</li>
       </ol>
     </section>
@@ -60,8 +60,8 @@
             <a class="btn btn-warning" href="{{URL::to('kitchen/order/return/'.App\Order::getOrder($id)->id)}}" onclick="return (confirm('Are you sure you want to return this order?'))">Return Order</a>
             @endif
 
-            @if(App\Order::getOrder($id)->is_paid == 0)
-            <a class="btn btn-success" href="{{URL::to('admin/complete/order/'.App\Order::getOrder($id)->id)}}">Complete Order</a>
+            @if(App\Order::getOrder($id)->is_paid == 0 && App\Order::getOrder($id)->is_cancelled == 0)
+            <a class="btn btn-success" href="{{URL::to('waiter/complete/order/'.App\Order::getOrder($id)->id)}}">Complete Order</a>
             @endif
             
             @if(App\Order::getOrder($id)->is_cancelled == 0 && App\Order::getOrder($id)->is_paid == 0)
@@ -69,7 +69,7 @@
             @endif
             
             <a target="_blank" class="btn btn-primary" href="{{URL::to('receipt/'.App\Order::getOrder($id)->id)}}">Print Receipt</a>
-            <a class="btn btn-warning" href="{{URL::to('/admin/orders/individual/report/'.App\Order::getOrder($id)->id)}}">Report</a>
+            <a class="btn btn-warning" href="{{URL::to('/waiter/orders/individual/report/'.App\Order::getOrder($id)->id)}}">Report</a>
             <br><br>
             <table id="example1" class="table table-bordered table-hover">
                 <thead>

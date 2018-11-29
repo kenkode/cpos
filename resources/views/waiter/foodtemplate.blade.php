@@ -81,7 +81,7 @@ require public_path()."/jcart-1.3/jcart/jcart.php";
                         <input type="hidden" name="my-item-url" value="{{asset('images/'.$food->image)}}" />
                         <input type="hidden" name="my-item-size" id="{{'size_'.$i}}" value="normal" />
 
-                        <div class="caption">
+                        <div class="caption" style="height:300px !important">
                             <h4 style="font-size: 16px;" data-name="product_name">{{$food->name}}</h4>
                             <hr class="line">
                             <div class="form-group">

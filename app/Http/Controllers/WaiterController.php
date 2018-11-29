@@ -12,6 +12,7 @@ use PHPExcel;
 use PHPExcel_Cell;
 use Maatwebsite\Excel\Facades\Excel as Excel;
 use Illuminate\Support\Facades\Auth;
+use Redirect;
 
 class WaiterController extends Controller
 {
@@ -46,6 +47,40 @@ class WaiterController extends Controller
       return view('waiter.show',compact('orderitems','id'));
     }
 
+    public function payments(){
+      $orders = Order::orderBy('id','DESC')->get();
+      return view('waiter.payments',compact('orders'));
+    }
+
+    public function paymentCreate(){
+        $orders = Order::orderBy('id','DESC')->where('is_paid',0)->get();
+        return view('waiter.paymentcreate',compact('orders'));
+    }
+
+    public function completeOrder($id){
+        $order = Order::find($id);
+        return view('waiter.completetransaction',compact('order'));
+    }
+
+    public function paymentShow($id){
+      $orderitems = Orderitem::where('order_id',$id)->get();
+      return view('waiter.paymentshow',compact('orderitems','id'));
+    }
+
+    public function paymentStore(Request $request){
+    	$order = Order::find($request->order);
+
+        $order->payment_method = $request->mode;
+        if($request->mode != "Cash"){
+            $order->transaction_number = $request->transaction_number;
+        }
+        $order->is_paid = 1;
+
+		  $order->update();
+
+        return Redirect::to('/waiter/orders/payments')->withFlashMessage('Order successfully paid!');
+	}
+
     public function send(Request $request){
         $jcart = array();
         parse_str($request->jcart,$jcart);
@@ -71,11 +106,11 @@ class WaiterController extends Controller
         $order = new Order;
         $order->order_no = $orderno;
         $order->amount = str_replace(',', '', $jcart['jcartSubtotal']);
-        $order->is_paid = 1;
+        $order->is_paid = 0;
         $order->is_cancelled = 0;
         $order->waiter_id = Auth::user()->id;
-        $order->payment_method = $jcart['payment_method'];
-        $order->transaction_number = $jcart['trans_no'];
+        // $order->payment_method = $jcart['payment_method'];
+        // $order->transaction_number = $jcart['trans_no'];
         $order->amount_paid = str_replace(',','',$jcart['amount']);
         $order->save();
 

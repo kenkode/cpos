@@ -92,14 +92,14 @@
                   <td>{{$orderitem->quantity}}</td>
                   <td>{{number_format($orderitem->amount,2)}}</td>
                   <td>{{number_format($orderitem->amount * $orderitem->quantity,2)}}</td>
-                  @if(App\Order::getOrder($id)->is_complete == 1)
+                  @if(App\Order::getOrder($id)->is_paid == 1)
                   <td><span class="label label-success">Complete</span></td>
                   @elseif($orderitem->is_cancelled == 1)
                   <td><span class="label label-danger">Cancelled</span></td>
-                  @elseif($orderitem->is_cancelled == 0 && App\Order::getOrder($id)->is_complete == 0)
+                  @elseif($orderitem->is_cancelled == 0 && App\Order::getOrder($id)->is_paid == 0)
                   <td><span class="label label-warning">Pending</span></td>
                   @endif
-                  @if(App\Order::getOrder($id)->is_complete == 0 && App\Order::getOrder($id)->is_paid == 0)
+                  @if(App\Order::getOrder($id)->is_paid == 0 && App\Order::getOrder($id)->is_paid == 0)
                   <td>
 
                   <div class="btn-group">
@@ -137,7 +137,7 @@
                     <td><strong>{{number_format($total,2)}}</strong></td>
                     <td></td>
                     <td></td>
-                    @if(App\Order::getOrder($id)->is_complete == 0 && App\Order::getOrder($id)->is_paid == 0)
+                    @if(App\Order::getOrder($id)->is_paid == 0)
                   <td></td>
                   @endif
                 </tfoot>

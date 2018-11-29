@@ -45,8 +45,6 @@
     </table>
    </div>
 
-<br/>
-
 
   <div class="content" style='margin-top:-70px;'>
 

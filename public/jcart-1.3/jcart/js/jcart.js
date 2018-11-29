@@ -233,7 +233,7 @@ $(function() {
 
 		container.delegate('#clearCart', 'click', function(e){
 			//alert('click');
-			if(confirm("Are you sure you want to empty this cart?")){
+			if(confirm("Are you sure you want to empty this order?")){
 			empty();
 			$('#jcart-checkout').disabled(true);
 			$('#clearCart').disabled(true);
@@ -243,11 +243,11 @@ $(function() {
 
 		container.delegate('#jcart-checkout', 'click', function(e){
 			//alert($('#form').serialize());
-			if($('#amount').val() <=0 || $('#amount').val() == ''){
-               alert('Please insert amount!');
-			}else{
+			// if($('#amount').val() <=0 || $('#amount').val() == ''){
+            //    alert('Please insert amount!');
+			// }else{
 			send();
-		    }
+		    // }
 			e.preventDefault();
 		});
 

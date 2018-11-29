@@ -88,6 +88,19 @@ Route::post('/food/report', 'FoodController@getreport');
 Route::get('/food/individual/report/{id}', 'FoodController@individualreport');
 Route::post('/food/individual/report/{id}', 'FoodController@getindividualreport');
 
+/*payments*/
+Route::get('/payments', 'PaymentsController@index');
+Route::get('/payments/create', 'PaymentsController@create');
+Route::post('/payments/store', 'PaymentsController@store');
+Route::get('/payments/edit/{id}', 'PaymentsController@edit');
+Route::post('/payments/update/{id}', 'PaymentsController@update');
+Route::get('/payments/show/{id}', 'PaymentsController@show');
+Route::get('/payments/delete/{id}', 'PaymentsController@destroy');
+Route::get('/payments/report', 'PaymentsController@report');
+Route::post('/payments/report', 'PaymentsController@getreport');
+Route::get('/payments/individual/report/{id}', 'PaymentsController@individualreport');
+Route::post('/payments/individual/report/{id}', 'PaymentsController@getindividualreport');
+
 /*settings*/
 Route::get('/setting', 'SettingsController@index');
 Route::post('/setting/update', 'SettingsController@update');
@@ -114,6 +127,14 @@ Route::post('/users/individual/report/{id}', 'UsersController@getindividualrepor
 /*orders*/
 Route::post('/send', 'WaiterController@send');
 Route::get('/waiter/orders/', 'WaiterController@orders');
+Route::get('/waiter/order/show/{id}', 'WaiterController@paymentShow');
+Route::get('/waiter/orders/payments', 'WaiterController@payments');
+Route::get('/waiter/orders/payments/create', 'WaiterController@paymentCreate');
+Route::get('/waiter/complete/order/{id}', 'WaiterController@completeOrder');
+Route::post('/waiter/orders/payments/store', 'WaiterController@paymentStore');
+Route::get('/waiter/orders/payments/report', 'WaiterController@paymentsreport');
+Route::post('/waiter/orders/payments/report', 'WaiterController@getpaymentsreport');
+
 Route::get('/waiter/summary/', 'WaiterController@summary');
 Route::get('/admin/summary/', 'AdminController@summary');
 Route::get('/order/show/{id}', 'WaiterController@orderitems');
@@ -150,6 +171,9 @@ Route::get('/receipt/{id}', 'WaiterController@receipt');
 Route::get('/invoice/{id}', 'AdminController@client');
 Route::post('/invoice/{id}', 'AdminController@invoice');
 Route::get('/admin/orders/payments', 'AdminController@payments');
+Route::get('/admin/orders/payments/create', 'AdminController@paymentCreate');
+Route::get('/admin/complete/order/{id}', 'AdminController@completeOrder');
+Route::post('/admin/orders/payments/store', 'AdminController@paymentStore');
 Route::get('/admin/orders/payments/report', 'AdminController@paymentsreport');
 Route::post('/admin/orders/payments/report', 'AdminController@getpaymentsreport');
 Route::get('/cashier/orders/report', 'CashierController@report');

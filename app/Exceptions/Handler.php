@@ -44,8 +44,8 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        //return parent::render($request, $exception);
-        return redirect('/503')->withError('An error has occured! Please contact your system administrator');
+        return parent::render($request, $exception);
+        // return redirect('/503')->withError('An error has occured! Please contact your system administrator');
     }
 
     /**

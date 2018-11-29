@@ -86,7 +86,11 @@
                   <td>{{$orderitem->size}}</td>
                   <td>{{$orderitem->created_at->format('Y-m-d')}}</td>
                   <td>{{$orderitem->quantity}}</td>
+                  @if($orderitem->is_paid == 0)
+                  <td>Not Paid</td>
+                  @else
                   <td>{{number_format($orderitem->amount,2)}}</td>
+                  @endif
                   <td>{{number_format($orderitem->amount * $orderitem->quantity,2)}}</td>
                   @if(App\Order::getOrder($id)->is_complete == 1)
                   <td><span class="label label-success">Complete</span></td>

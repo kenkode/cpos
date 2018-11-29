@@ -48,7 +48,11 @@ $categories = App\Foodcategory::all();
           
           </a>
         </li>
-
+        <li>
+          <a href="{{URL::to('/waiter/orders/payments')}}">
+            <i class="fa fa-money"></i> <span>Payments</span>
+          </a>
+        </li>
         <li>
           <a href="{{URL::to('/waiter/summary/')}}">
             <i class="fa fa-file"></i> <span>My Summary</span>

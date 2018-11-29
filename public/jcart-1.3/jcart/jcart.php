@@ -503,39 +503,41 @@ class Jcart {
 
 		// If this is the checkout hide the cart checkout button
 		if($this->itemCount > 0){
-		echo tab(7) . "<tr><td colspan='6' style='font-size:20px;' align='right'><span id='jcart-subtotal'>{$config['text']['subtotal']}: <strong>$currencySymbol" . number_format($this->subtotal, $priceFormat['decimals'], $priceFormat['dec_point'], $priceFormat['thousands_sep']) . "</strong></span>\n";
+		echo tab(7) . "<tr><td align='right' colspan='6' style='font-size:20px;' align='right'><span id='jcart-subtotal'>{$config['text']['subtotal']}: <strong>$currencySymbol" . number_format($this->subtotal, $priceFormat['decimals'], $priceFormat['dec_point'], $priceFormat['thousands_sep']) . "</strong></span>\n";
 		echo tab(7) . "<input type='hidden' id='jcartSubtotal' name='jcartSubtotal' value='".number_format($this->subtotal, $priceFormat['decimals'], $priceFormat['dec_point'], $priceFormat['thousands_sep'])."' />\n";
 		    "</td>\n";
             "</tr>\n";
-		echo tab(5) . "<tr><td colspan='6' align='right'>
-                <p style='color: red'>Please fill in the fields in *</p>
-                <div class='form-group'>
-                <label>Payment Method <span style='color: red'>*</span></label><br>
-                <select class='form-control select2' style='width:50%' required='' name='payment_method'>
-                  <option value='Cash'>Cash</option>
-                  <option value='Paybill'>Till Number</option>
-                  <option value='Bank'>Atm Card</option>
-                </select></div>\n";
-                "</td>\n";
-                "</tr>\n";
+		// echo tab(5) . "<tr><td colspan='6' align='right'>
+        //         <p style='color: red'>Please fill in the fields in *</p>
+        //         <div class='form-group'>
+        //         <label>Payment Method <span style='color: red'>*</span></label><br>
+        //         <select class='form-control select2' style='width:50%' required='' name='payment_method'>
+        //           <option value='Cash'>Cash</option>
+        //           <option value='Paybill'>Till Number</option>
+        //           <option value='Bank'>Atm Card</option>
+        //         </select></div>\n";
+        //         "</td>\n";
+        //         "</tr>\n";
 
-        echo tab(5) . "<tr><td colspan='6' align='right'>
-                <label>Transaction No. (if Till number/ Atm Card is used)</label>
-                  <input type='text' class='form-control' style='width:50%' id='exampleInputEmail1' placeholder='Enter transaction number' name='trans_no'>\n";
-              "</td>\n";
-              "</tr>\n";
+        // echo tab(5) . "<tr><td colspan='6' align='right'>
+        //         <label>Transaction No. (if Till number/ Atm Card is used)</label>
+        //           <input type='text' class='form-control' style='width:50%' id='exampleInputEmail1' placeholder='Enter transaction number' name='trans_no'>\n";
+        //       "</td>\n";
+        //       "</tr>\n";
         
-        echo tab(5) . "<tr><td colspan='6' align='right'>
-                <div class='form-group'>
-                <label >Amount Paid <span style='color: red'>*</span></label>
-                  <div class='input-group'>
-                  <span class='input-group-addon'>KES</span>
-                  <input type='text' class='form-control' id='amount' placeholder='Enter amount paid' name='amount' required=''></div></div>\n";
-              "</td>\n";
-              "</tr>\n";
+        // echo tab(5) . "<tr><td colspan='6' align='right'>
+        //         <div class='form-group'>
+        //         <label >Amount Paid <span style='color: red'>*</span></label>
+        //           <div class='input-group'>
+        //           <span class='input-group-addon'>KES</span>
+        //           <input type='text' class='form-control' id='amount' placeholder='Enter amount paid' name='amount' required=''></div></div>\n";
+        //       "</td>\n";
+        //       "</tr>\n";
 
+		echo tab(5) . "<tr><td colspan='6' align='right'>";
 
 		if ($isCheckout !== true) {
+			
 			$inputType = "button";
 		$src = " src='{$config['button']['empty']}' class='btn btn-danger sc-cart-checkout' alt='{$config['text']['emptyButton']}' title='' ";
 		
@@ -567,7 +569,9 @@ class Jcart {
 		}
 
 		
-	    }
+		}
+		echo tab(5) . "</td>\n
+                       </tr>\n";
 
 		
 		echo tab(6) . "</th>\n";
@@ -593,6 +597,7 @@ class Jcart {
 				echo tab(6) . "</td>\n";
 				echo tab(6) . "<td class='jcart-item-qty'>\n";
 				echo tab(7) . "<input name='jcartItemId[]' type='hidden' value='{$item['id']}' />\n";
+				echo tab(7) . "<input type='hidden' class='form-control' id='amount' placeholder='Enter amount paid' name='amount' value='$this->subtotal'></div></div>\n";
 				echo tab(7) . "<input id='jcartItemQty-{$item['id']}' name='jcartItemQty[]' size='2' type='text' value='{$item['qty']}' />\n";
 				echo tab(6) . "</td>\n";
 

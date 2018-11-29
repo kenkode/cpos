@@ -1,5 +1,5 @@
 
-@extends('layouts.admin')
+@extends('layouts.waiter')
 @section('content')
 <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
@@ -48,7 +48,8 @@
           @endif
             <!-- /.box-header -->
             <!-- form start -->
-            <a class="btn btn-warning btn-sm" href="{{ URL::to('admin/orders/report')}}">Report</a>
+            <a class="btn btn-warning btn-sm" href="{{ URL::to('waiter/orders/report')}}">Report</a>
+            <a class="btn btn-success btn-sm" href="{{ URL::to('waiter/orders/payments/create')}}">Create</a>
             <br><br>
             <table id="example1" class="table table-bordered table-hover">
                 <thead>
@@ -57,10 +58,10 @@
                   <th>Order No.</th>
                   <th>Date</th>
                   <th>Amount</th>
-                  <th>Status</th>
-                  <th>Paid</th>
+                  <th>Payment Method</th>
+                  <th>Transaction Number</th>
+                  <!-- <th>Amount Paid</th> -->
                   <th>Transacted By</th>
-                  <th>Cancelled By</th>
                   <th>Action</th>
                 </tr>
                 </thead>
@@ -72,28 +73,16 @@
                   <td>{{$i}}</td>
                   <td>{{$order->order_no}}</td>
                   <td>{{$order->created_at->format('Y-m-d')}}</td>
+                  @if($order->is_paid == 0)
+                  <td style="color:red;"><strong>Not Paid</strong></td>
+                  @else
                   <td>{{number_format(App\Orderitem::getAmount($order->id),2)}}</td>
-                  @if($order->is_cancelled == 1)
-                  <td><span class="label label-danger">Cancelled</span></td>
-                  @else
-                  <td><span class="label label-success">Complete</span></td>
-                  @endif
-
-                  @if($order->is_paid == 1)
-                  <td><span class="label label-success">Paid</span></td>
-                  @else
-                  <td><span class="label label-danger">Reversed</span></td>
                   @endif
                   
-
+                  <td>{{$order->payment_method}}</td>
+                  <td>{{$order->transaction_number}}</td>
+                  <!-- <td>{{number_format($order->amount_paid,2)}}</td> -->
                   <td>{{App\User::getUser($order->waiter_id)}}</td>
-                  @if($order->is_cancelled == 1)
-                  <td>{{App\User::getUser($order->cancel_id)}}</td>
-                  @else
-                  <td></td>
-                  @endif
-                  
-                  
                   <td>
                   <div class="btn-group">
                   <button type="button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
@@ -101,16 +90,20 @@
                   </button>
           
                   <ul class="dropdown-menu" role="menu">
-                    <li><a href="{{URL::to('admin/order/show/'.$order->id)}}">View</a></li>
-                    <li><a href="{{URL::to('receipt/'.$order->id)}}" target="_blank">Print Receipt</a></li>
-                    <li><a href="{{URL::to('invoice/'.$order->id)}}" target="_blank">Invoice</a></li>
+                    <li><a href="{{URL::to('waiter/order/show/'.$order->id)}}">View</a></li>
+                    @if($order->is_paid == 0 && $order->is_cancelled == 0)
+                    <li><a href="{{URL::to('waiter/complete/order/'.$order->id)}}">Complete Transaction</a></li>
+                    @endif
+                    <li><a href="{{URL::to('receipt/'.$order->id)}}" target="_blank">Receipt</a></li>
+                    
                     @if($order->is_paid == 0 && $order->is_cancelled == 0)
                     <li><a href="{{URL::to('/kitchen/order/cancel/'.$order->id)}}" onclick="return (confirm('Are you sure you want to cancel this order?'))">Cancel</a></li>
                     @endif
                     @if($order->is_cancelled == 1)
                     <li><a href="{{URL::to('/kitchen/order/return/'.$order->id)}}" onclick="return (confirm('Are you sure you want to return this order?'))">Return</a></li>
                     @endif
-                    <li><a href="{{URL::to('admin/orders/individual/report/'.$order->id)}}">Report</a></li>
+
+                    <li><a href="{{URL::to('waiter/orders/individual/report/'.$order->id)}}">Report</a></li>
                   </ul>
               </div>
 

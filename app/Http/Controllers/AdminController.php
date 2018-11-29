@@ -14,6 +14,7 @@ use PDF;
 use PHPExcel;
 use PHPExcel_Cell;
 use Maatwebsite\Excel\Facades\Excel as Excel;
+use Redirect;
 
 class AdminController extends Controller
 {
@@ -52,9 +53,34 @@ class AdminController extends Controller
     }
 
     public function payments(){
-      $orders = Order::orderBy('id','DESC')->where('is_paid',1)->get();
+      $orders = Order::orderBy('id','DESC')->get();
       return view('admin.payments',compact('orders'));
     }
+
+    public function paymentCreate(){
+        $orders = Order::orderBy('id','DESC')->where('is_paid',0)->get();
+        return view('admin.paymentcreate',compact('orders'));
+    }
+
+    public function completeOrder($id){
+        $order = Order::find($id);
+        return view('admin.completetransaction',compact('order'));
+    }
+
+    public function paymentStore(Request $request){
+
+    	$order = Order::find($request->order);
+
+        $order->payment_method = $request->mode;
+        if($request->mode != "Cash"){
+            $order->transaction_number = $request->transaction_number;
+        }
+        $order->is_paid = 1;
+
+		$order->update();
+
+        return Redirect::to('/admin/orders/payments')->withFlashMessage('Order successfully paid!');
+	}
 
     public function report(){
         return view('admin.report');
