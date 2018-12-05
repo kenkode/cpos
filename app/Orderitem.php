@@ -1,6 +1,7 @@
 <?php
 
 namespace App;
+use DB;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -23,6 +24,12 @@ class Orderitem extends Model
 
     public static function getAmount($id){
         $amount = Orderitem::where('order_id',$id)->where('is_cancelled',0)->sum('amount');
+
+        $amount = DB::table('orderitems')
+                    ->selectRaw('SUM(amount * quantity) as total')
+                    ->where('order_id',$id)
+                    ->where('is_cancelled',0)
+                    ->first()->total;
         
         return $amount;
     }

@@ -73,8 +73,10 @@
                   <td>{{$i}}</td>
                   <td>{{$order->order_no}}</td>
                   <td>{{$order->created_at->format('Y-m-d')}}</td>
-                  @if($order->is_paid == 0)
+                  @if($order->is_paid == 0 && $order->is_cancelled == 0)
                   <td style="color:red;"><strong>Not Paid</strong></td>
+                  @elseif($order->is_cancelled == 1)
+                  <td style="color:red;"><strong>Reversed</strong></td>
                   @else
                   <td>{{number_format(App\Orderitem::getAmount($order->id),2)}}</td>
                   @endif

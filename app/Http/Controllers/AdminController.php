@@ -165,8 +165,10 @@ class AdminController extends Controller
             $status = 'Complete';
             }
 
-            if($orders[$i]->is_paid == 1){
+            if($orders[$i]->is_paid == 1 && $orders[$i]->is_cancelled == 0){
             $paid='Paid';
+            }else if($orders[$i]->is_paid == 0 && $orders[$i]->is_cancelled == 0){
+            $paid='Not Paid';
             }else{
             $paid='Reversed';
             }
@@ -481,12 +483,20 @@ class AdminController extends Controller
                
             $row = 6;
             $total = 0;
+            $amount = '';
              
+            if($order->is_paid == 0 && $order->is_cancelled == 0){
+            $amount = 'Not Paid';
+            }elseif($order->is_cancelled == 1){
+            $amount = 'Reversed';
+            }else{
+            $amount = number_format(App\Orderitem::getAmount($order->id),2);
+            }
              
              for($i = 0; $i<count($orders); $i++){
              $total = $total + Orderitem::getAmount($orders[$i]->id);
              $sheet->row($row, array(
-             ($i+1),$orders[$i]->order_no,date('d-M-Y',strtotime($orders[$i]->created_at)),Orderitem::getAmount($orders[$i]->id),$orders[$i]->payment_method,$orders[$i]->transaction_number,$orders[$i]->amount_paid,User::getUser($orders[$i]->waiter_id)
+             ($i+1),$orders[$i]->order_no,date('d-M-Y',strtotime($orders[$i]->created_at)),$amount,$orders[$i]->payment_method,$orders[$i]->transaction_number,$orders[$i]->amount_paid,User::getUser($orders[$i]->waiter_id)
              ));
              $row++;
              }

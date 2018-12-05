@@ -200,7 +200,8 @@ $(function() {
 					//alert(response);
 					alert("Order Complete");
 					empty();
-					window.location.href = "/cpos/public/receipt/"+response;
+					window.open("/cpos/public/receipt/"+response, '_blank').focus();
+					// window.location.href = "/cpos/public/receipt/"+response;
 				},
 			});
 		}

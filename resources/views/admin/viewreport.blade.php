@@ -80,10 +80,11 @@
 
                   @if($order->is_paid == 1)
                   <td><span class="label label-success">Paid</span></td>
-                  @else
+                  @elseif($order->is_paid == 0 && $order->is_cancelled == 0)
                   <td><span class="label label-danger">Not Paid</span></td>
-                  @endif
-                  
+                  @else
+                  <td><span class="label label-danger">Reversed</span></td>
+                  @endif    
 
                   <td>{{App\User::getUser($order->waiter_id)}}</td>
                   
