@@ -199,3 +199,11 @@ Route::post('/admin/summary/report', 'AdminController@getsummaryreport');
 Route::get('/admin/user/summary/{id}', 'AdminController@usersummary');
 Route::get('/admin/user/summary/report/{id}', 'AdminController@usersummaryreport');
 Route::post('/admin/user/summary/report/{id}', 'AdminController@getusersummaryreport');
+
+/*revenues*/
+Route::get('/revenues', 'RevenuesController@index');
+Route::get('/revenues/show/{id}', 'RevenuesController@show');
+Route::get('/revenues/report', 'RevenuesController@report');
+Route::post('/revenues/report', 'RevenuesController@getreport');
+Route::get('/revenues/individual/report/{id}', 'RevenuesController@individualreport');
+Route::post('/revenues/individual/report/{id}', 'RevenuesController@getindividualreport');

@@ -86,6 +86,7 @@ $categories = App\Foodcategory::all();
           <ul class="treeview-menu">
             <li><a href="{{URL::to('/admin/orders')}}"><i class="fa fa-circle-o"></i> Orders</a></li>
             <li><a href="{{URL::to('/admin/orders/payments')}}"><i class="fa fa-circle-o"></i> Payments</a></li>
+            <li><a href="{{URL::to('/revenues')}}"><i class="fa fa-circle-o"></i> Revenues</a></li>
           </ul>
         </li>
 

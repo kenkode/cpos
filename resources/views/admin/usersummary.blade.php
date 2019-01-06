@@ -10,8 +10,9 @@
         <small>Users Summary</small>
       </h1>
       <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active">Summary</li>
+        <li><a href="{{URL::to('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="{{URL::to('/admin/summary')}}"><i class="fa fa-file"></i> Summary</a></li>
+        <li class="active">Show</li>
       </ol>
     </section>
 
@@ -53,7 +54,7 @@
             <table id="example1" class="table table-bordered table-hover">
                 <thead>
                 <tr>
-                  <th>Waiter</th>
+                  <th>User</th>
                   <th>Completed Orders</th>
                   <th>Cancelled Orders</th>
                   <th>Total Orders</th>

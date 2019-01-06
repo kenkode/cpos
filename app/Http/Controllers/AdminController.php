@@ -30,7 +30,7 @@ class AdminController extends Controller
     }
 
     public function summary(){
-            $users = User::where('role','waiter')->get();
+            $users = User::all();
             
             return view('admin.summary',compact('users'));
     }
@@ -71,13 +71,38 @@ class AdminController extends Controller
 
     	$order = Order::find($request->order);
 
-        $order->payment_method = $request->mode;
-        if($request->mode != "Cash"){
-            $order->transaction_number = $request->transaction_number;
+        if($request->mode != "Cash" && $request->mode != "Double Payment"){
+          $order->payment_method = $request->mode;
+          $order->transaction_number = $request->transaction_number;
+          $order->is_double_payment = 0;
+        }else if($request->mode == "Double Payment"){
+          $order->payment_method = $request->mode_1.", ".$request->mode_2;
+          $order->is_double_payment = 1;
+          if($request->mode_1 == "Cash"){
+            $order->amount_paid_by_cash = $request->amount_1;
+          }else if($request->mode_1 == "Mpesa"){
+            $order->amount_paid_by_mpesa = $request->amount_1;
+          }else if($request->mode_1 == "Bank"){
+            $order->amount_paid_by_mpesa = $request->amount_1;
+          }
+
+          if($request->mode_2 == "Cash"){
+            $order->amount_paid_by_cash = $request->amount_2;
+          }else if($request->mode_2 == "Mpesa"){
+            $order->amount_paid_by_mpesa = $request->amount_2;
+          }else if($request->mode_2 == "Bank"){
+            $order->amount_paid_by_mpesa = $request->amount_2;
+          }
+
+          if($request->mode_1 != "Cash" && $request->mode_2 != "Cash"){
+            $order->transaction_number = $request->transaction_number_1.", ".$request->transaction_number_2;
+          }else{
+            $order->transaction_number = $request->transaction_number_1.$request->transaction_number_2;
+          }
         }
         $order->is_paid = 1;
-
-		$order->update();
+        $order->tax = 0.16 * $order->amount;
+		    $order->update();
 
         return Redirect::to('/admin/orders/payments')->withFlashMessage('Order successfully paid!');
 	}
@@ -601,7 +626,7 @@ class AdminController extends Controller
     
 
         $excel->sheet('Summary Report', function($sheet) use ($from, $to, $f, $t){
-            $users = User::where('role','waiter')->get();
+            $users = User::all();
 
             $organization = Setting::find(1);
                $sheet->row(1, array(
@@ -688,7 +713,7 @@ class AdminController extends Controller
         $f = $request->from;
         $t = $request->to;
 
-        $users = User::where('role','waiter')->get();
+        $users = User::all();
         $organization = Setting::find(1);
         $view = \View::make('admin.viewsummaryreport',compact('users','organization','f','t','from','to'));
         $html = $view->render();

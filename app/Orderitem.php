@@ -26,9 +26,11 @@ class Orderitem extends Model
         $amount = Orderitem::where('order_id',$id)->where('is_cancelled',0)->sum('amount');
 
         $amount = DB::table('orderitems')
-                    ->selectRaw('SUM(amount * quantity) as total')
+                    ->join('orders','orderitems.order_id','=','orders.id')
+                    ->selectRaw('SUM(orderitems.amount * quantity) as total')
                     ->where('order_id',$id)
-                    ->where('is_cancelled',0)
+                    ->where('orders.is_paid',1)
+                    ->where('orderitems.is_cancelled',0)
                     ->first()->total;
         
         return $amount;
