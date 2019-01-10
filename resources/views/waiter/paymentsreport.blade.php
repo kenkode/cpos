@@ -1,5 +1,5 @@
 
-@extends('layouts.admin')
+@extends('layouts.waiter')
 @section('content')
 <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
@@ -11,7 +11,7 @@
       </h1>
       <ol class="breadcrumb">
         <li><a href="{{URL::to('/dashboard')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="{{URL::to('/admin/orders/payments')}}"><i class="fa fa-money"></i> Payments</a></li>
+        <li><a href="{{URL::to('/waiter/orders/payments')}}"><i class="fa fa-money"></i> Payments</a></li>
         <li class="active">Report</li>
       </ol>
     </section>

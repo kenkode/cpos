@@ -6,12 +6,12 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        Ordes
-        <small>System Orders</small>
+        Payments
+        <small>Paid Orders</small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="{{URL::to('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active">Orders</li>
+        <li class="active">Payments</li>
       </ol>
     </section>
 
@@ -22,7 +22,7 @@
         <div class="col-xs-12">
           <div class="box box-primary">
             <div class="box-header">
-              <h3 class="box-title">Orders</h3>
+              <h3 class="box-title">Payments</h3>
             </div>
             <!-- /.box-header -->
             <div class="box-body">
@@ -68,6 +68,7 @@
                 <tbody>
                 <?php $i=1; $total = 0;?>
                 @foreach($orders as $order)
+                @if($order->is_paid == 1)
                 <?php $total = $total + App\Orderitem::getAmount($order->id); ?>
                 <tr>
                   <td>{{$i}}</td>
@@ -99,7 +100,7 @@
                     <li><a href="{{URL::to('receipt/'.$order->id)}}" target="_blank">Receipt</a></li>
                     
                     @if($order->is_paid == 0 && $order->is_cancelled == 0)
-                    <li><a href="{{URL::to('/kitchen/order/cancel/'.$order->id)}}" onclick="return (confirm('Are you sure you want to cancel this order?'))">Cancel</a></li>
+                    <li><a href="{{URL::to('/kitchen/order/cancel/'.$order->id)}}" onclick="return (confirm('Are you sure you want to reverse this order?'))">Reverse</a></li>
                     @endif
                     @if($order->is_cancelled == 1)
                     <li><a href="{{URL::to('/kitchen/order/return/'.$order->id)}}" onclick="return (confirm('Are you sure you want to return this order?'))">Return</a></li>
@@ -112,6 +113,7 @@
                     </td>
                 </tr>
                 <?php $i++;?>
+                @endif
                 @endforeach
                 </tbody>
 

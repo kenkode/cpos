@@ -186,6 +186,8 @@ Route::get('/cashier/orders/individual/report/{id}', 'CashierController@individu
 Route::get('/waiter/orders/individual/report/{id}', 'WaiterController@individualreport');
 Route::get('/waiter/orders/report', 'WaiterController@report');
 Route::post('/waiter/orders/report', 'WaiterController@getreport');
+Route::get('/waiter/payments/report', 'WaiterController@paymentsreport');
+Route::post('/waiter/payments/report', 'AdminController@getpaymentsreport');
 Route::get('/waiter/summary/report', 'WaiterController@summaryreport');
 Route::post('/waiter/summary/report', 'WaiterController@getsummaryreport');
 Route::get('/waiter/today/orders/report', 'WaiterController@todayreport');

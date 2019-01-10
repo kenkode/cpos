@@ -4,12 +4,46 @@
 
 <script type="text/javascript">
   $(document).ready(function(){
-  $(".transaction_number").hide();
-  $("#mode").on("change", function(){
-        if($(this).val() != "Cash"){
+    $(".transaction_number").hide();
+    $(".payment_mode_div").hide();
+    $(".amount_div").hide();
+    $(".transaction_number_1").hide();
+    $(".transaction_number_2").hide();
+    $("#mode").on("change", function(){
+        if($(this).val() != "Cash" && $(this).val() != "Double Payment"){
             $(".transaction_number").show();
+        }else if($(this).val() == "Double Payment"){
+            $(".transaction_number").hide();
+            $(".payment_mode_div").show();
+            $(".amount_div").show();
         }else{
             $(".transaction_number").hide();
+            $(".payment_mode_div").hide();
+            $(".amount_div").hide();
+        }
+    });
+    $("#mode_1").on("change", function(){
+        if($(this).val() != "Cash"){
+            $(".transaction_number_1").show();
+        }else{
+            $(".transaction_number_1").hide();
+        }
+    });
+
+    $('body').on("keyup","#amount_1",function(){
+      alert()
+        $('#amount_2').val($('#total').val() - $('#amount_1').val());
+    })
+
+    $('body').on('keyup','#amount_2',function(){
+        $('#amount_1').val($('#total').val() - $('#amount_2').val());
+    })
+
+    $("#mode_2").on("change", function(){
+        if($(this).val() != "Cash"){
+            $(".transaction_number_2").show();
+        }else{
+            $(".transaction_number_2").hide();
         }
     });
   });
@@ -53,13 +87,54 @@
                   <input type="hidden" value="{{$order->id}}" name="order">
                 </div>
 
+                <input type="hidden" id="total" value="{{$order->amount}}">
+
                 <div class="form-group">
                   <label for="exampleInputEmail1">Mode of Payment <span style="color: red">*</span></label><br>
                   <select class="form-control select2" style="width: 30%;" required="" name="mode" id="mode">
                     <option value="Cash">Cash</option>
                     <option value="Mpesa">Mpesa</option>
                     <option value="Bank">Bank</option>
+                    <option value="Double Payment">Double Payment</option>
+                  </select>
+                </div>
+
+                <div class="form-group payment_mode_div">
+                  <label for="exampleInputEmail1">Mode of Payment <span style="color: red">*</span></label><br>
+                  <select class="form-control select2" style="width: 30%;" required="" name="mode_1" id="mode_1">
+                    <option value="Cash">Cash</option>
+                    <option value="Mpesa">Mpesa</option>
+                    <option value="Bank">Bank</option>
                    </select>
+                </div>
+
+                <div class="form-group transaction_number_1">
+                  <label for="exampleInputEmail1">Transaction Number</label>
+                  <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Transaction Number" style="width: 30%" value="{{old('transaction_number_1')}}" name="transaction_number_1">
+                </div>
+
+                <div class="form-group amount_div">
+                  <label for="exampleInputEmail1">Amount</label>
+                  <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Amount" style="width: 30%" value="{{old('amount_1')}}" name="amount_1" id="amount_1">
+                </div>
+
+                <div class="form-group payment_mode_div">
+                  <label for="exampleInputEmail1">Mode of Payment <span style="color: red">*</span></label><br>
+                  <select class="form-control select2" style="width: 30%;" required="" name="mode_2" id="mode_2">
+                    <option value="Cash">Cash</option>
+                    <option value="Mpesa">Mpesa</option>
+                    <option value="Bank">Bank</option>
+                   </select>
+                </div>
+
+                <div class="form-group transaction_number_2">
+                  <label for="exampleInputEmail1">Transaction Number</label>
+                  <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Transaction Number" style="width: 30%" value="{{old('transaction_number_2')}}" name="transaction_number_2">
+                </div>
+
+                <div class="form-group amount_div">
+                  <label for="exampleInputEmail1">Amount</label>
+                  <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Amount" style="width: 30%" value="{{old('amount_2')}}" name="amount_2" id="amount_2">
                 </div>
 
                 <div class="form-group transaction_number">

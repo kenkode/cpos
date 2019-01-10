@@ -51,13 +51,13 @@
             <!-- form start -->
             <h4 style="color: green"><strong>Order Number: {{App\Order::getOrder($id)->order_no}}<br> 
             @if(App\Order::getOrder($id)->is_cancelled == 1)
-                  <td><span style="color: red">Status: Cancelled</span></td>
+                  <td><span style="color: red">Status: Reversed</span></td>
                   @else
-                  <td><span style="color: green">Status: Complete</span></td>
-                  @endif
-            </strong></h4>
+                  <td><span style="color: green">Status: Paid</span></td>
+                  @endif<br>
+            Payment by: {{App\User::getUser(App\Order::getOrder($id)->payment_by) ? App\User::getUser(App\Order::getOrder($id)->payment_by) : ""}}</strong></h4>
             @if(App\Order::getOrder($id)->is_cancelled == 1)
-            <a class="btn btn-warning" href="{{URL::to('kitchen/order/return/'.App\Order::getOrder($id)->id)}}" onclick="return (confirm('Are you sure you want to return this order?'))">Return Order</a>
+            <a class="btn btn-warning" href="{{URL::to('kitchen/order/return/'.App\Order::getOrder($id)->id)}}" onclick="return (confirm('Are you sure you want to return Payment By: this order?'))">Return Order</a>
             @endif
 
             @if(App\Order::getOrder($id)->is_paid == 0 && App\Order::getOrder($id)->is_cancelled == 0)
@@ -65,7 +65,7 @@
             @endif
             
             @if(App\Order::getOrder($id)->is_cancelled == 0 && App\Order::getOrder($id)->is_paid == 0)
-            <a class="btn btn-danger" href="{{URL::to('kitchen/order/cancel/'.App\Order::getOrder($id)->id)}}" onclick="return (confirm('Are you sure you want to cancel this order?'))">Cancel Order</a>
+            <a class="btn btn-danger" href="{{URL::to('kitchen/order/cancel/'.App\Order::getOrder($id)->id)}}" onclick="return (confirm('Are you sure you want to reverse this order?'))">Reverse Order</a>
             @endif
             
             <a target="_blank" class="btn btn-primary" href="{{URL::to('receipt/'.App\Order::getOrder($id)->id)}}">Print Receipt</a>
@@ -108,7 +108,7 @@
                   <td>{{number_format($orderitem->amount,2)}}</td>
                   <td>{{number_format($orderitem->amount * $orderitem->quantity,2)}}</td>
                   @if(App\Order::getOrder($id)->is_cancelled == 1)
-                  <td><span class="label label-danger">Cancelled</span></td>
+                  <td><span class="label label-danger">Reversed</span></td>
                   @else
                   <td><span class="label label-success">Complete</span></td>
                   @endif
@@ -126,8 +126,8 @@
                     <td></td>
                     <td></td>
                     <td><strong>{{$quantity}}</strong></td>
-                    <td><strong>{{number_format($amount,2)}}</strong></td>
-                    <td><strong>{{number_format($total,2)}}</strong></td>
+                    <!-- <td><strong>{{number_format($amount,2)}}</strong></td> -->
+                    <td colspan="2" align="right"><strong>KES {{number_format($total,2)}}</strong></td>
                     <td></td>
                     
                 </tfoot>

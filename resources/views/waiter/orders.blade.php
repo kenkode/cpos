@@ -59,6 +59,9 @@
                   <th>Amount</th>
                   <th>Status</th>
                   <th>Paid</th>
+                  <th>Transacted By</th>
+                  <th>Reversed By</th>
+                  <th>Payment By</th>
                   <th>Action</th>
                 </tr>
                 </thead>
@@ -72,28 +75,43 @@
                   <td>{{$order->created_at->format('Y-m-d')}}</td>
                   <td>{{number_format(App\Orderitem::getAmount($order->id),2)}}</td>
                   @if($order->is_cancelled == 1)
-                  <td><span class="label label-danger">Cancelled</span></td>
+                  <td><span class="label label-danger">Reversed</span></td>
                   @else
                   <td><span class="label label-success">Complete</span></td>
                   @endif
 
                   @if($order->is_paid == 1)
                   <td><span class="label label-success">Paid</span></td>
+                  @elseif($order->is_paid == 0 && $order->is_cancelled == 0)
+                  <td><span class="label label-danger">Not Paid</span></td>
                   @else
                   <td><span class="label label-danger">Reversed</span></td>
                   @endif
-                  <td>
+                  
 
+                  <td>{{App\User::getUser($order->waiter_id)}}</td>
+                  @if($order->is_cancelled == 1)
+                  <td>{{App\User::getUser($order->cancel_id)}}</td>
+                  @else
+                  <td></td>
+                  @endif
+                  
+                  <td>{{App\User::getUser($order->payment_by) ? App\User::getUser($order->payment_by) : ""}}</td>
+                  <td>
                   <div class="btn-group">
                   <button type="button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                     Action <span class="caret"></span>
                   </button>
           
                   <ul class="dropdown-menu" role="menu">
-                    <li><a href="{{URL::to('order/show/'.$order->id)}}">View</a></li>
+                    <li><a href="{{URL::to('waiter/order/show/'.$order->id)}}">View</a></li>
                     <li><a href="{{URL::to('receipt/'.$order->id)}}" target="_blank">Print Receipt</a></li>
+                    <li><a href="{{URL::to('invoice/'.$order->id)}}" target="_blank">Invoice</a></li>
                     @if($order->is_paid == 0 && $order->is_cancelled == 0)
-                    <li><a href="{{URL::to('order/cancel/'.$order->id)}}" onclick="return (confirm('Are you sure you want to cancel this order?'))">Cancel</a></li>
+                    <li><a href="{{URL::to('/kitchen/order/cancel/'.$order->id)}}" onclick="return (confirm('Are you sure you want to reverse this order?'))">Reverse</a></li>
+                    @endif
+                    @if($order->is_cancelled == 1)
+                    <li><a href="{{URL::to('/kitchen/order/return/'.$order->id)}}" onclick="return (confirm('Are you sure you want to return this order?'))">Return</a></li>
                     @endif
                     <li><a href="{{URL::to('waiter/orders/individual/report/'.$order->id)}}">Report</a></li>
                   </ul>
@@ -104,8 +122,8 @@
                 <?php $i++;?>
                 @endforeach
                 </tbody>
-               
-               <tfoot>
+
+                <tfoot>
                    
                     <td></td>
                     <td></td>
@@ -114,8 +132,11 @@
                     <td></td>
                     <td></td>
                     <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
                 </tfoot>
-
+               
               </table>
             
           <!-- /.box -->

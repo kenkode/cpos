@@ -66,7 +66,7 @@
                   <td>{{$completed}}</td>
                   <td>{{$cancelled}}</td>
                   <td>{{$orders}}</td>
-                  <td>{{number_format($amount,2)}}</td>
+                  <td>KES {{number_format($amount,2)}}</td>
                   
                   
                 </tr>

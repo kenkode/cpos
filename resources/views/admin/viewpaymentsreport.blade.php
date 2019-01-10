@@ -75,7 +75,7 @@
                   <td style="color:red;"><strong>Reversed</strong></td>
                   @else
                   <td>{{number_format(App\Orderitem::getAmount($order->id),2)}}</td>
-                  @endi
+                  @endif
                   <td>{{$order->payment_method}}</td>
                   <td>{{$order->transaction_number}}</td>
                   <td>{{number_format($order->amount_paid,2)}}</td>

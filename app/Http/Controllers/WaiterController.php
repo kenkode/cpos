@@ -13,6 +13,8 @@ use PHPExcel_Cell;
 use Maatwebsite\Excel\Facades\Excel as Excel;
 use Illuminate\Support\Facades\Auth;
 use Redirect;
+use DB;
+use App\User;
 
 class WaiterController extends Controller
 {
@@ -38,7 +40,13 @@ class WaiterController extends Controller
             $orders = Order::where('waiter_id',Auth::user()->id)->count();
             $cancelled = Order::where('waiter_id',Auth::user()->id)->where('is_cancelled',1)->count();
             $completed = Order::where('waiter_id',Auth::user()->id)->where('is_cancelled',0)->count();
-            $amount = Orderitem::where('waiter_id',Auth::user()->id)->where('is_cancelled',0)->sum('amount');
+            $amount = DB::table('orderitems')
+                    ->join('orders','orderitems.order_id','=','orders.id')
+                    ->selectRaw('SUM(orderitems.amount * quantity) as total')
+                    ->where('orders.waiter_id',Auth::user()->id)
+                    ->where('orders.is_paid',1)
+                    ->where('orderitems.is_cancelled',0)
+                    ->first()->total;
             return view('waiter.summary',compact('orders','cancelled','amount','completed'));
     }
 
@@ -70,13 +78,42 @@ class WaiterController extends Controller
     public function paymentStore(Request $request){
     	$order = Order::find($request->order);
 
-        $order->payment_method = $request->mode;
-        if($request->mode != "Cash"){
-            $order->transaction_number = $request->transaction_number;
+        if($request->mode != "Cash" && $request->mode != "Double Payment"){
+          $order->payment_method = $request->mode;
+          $order->transaction_number = $request->transaction_number;
+          $order->is_double_payment = 0;
+        }else if($request->mode == "Double Payment"){
+          $order->payment_method = $request->mode_1.", ".$request->mode_2;
+          $order->is_double_payment = 1;
+          if($request->mode_1 == "Cash"){
+            $order->amount_paid_by_cash = $request->amount_1;
+          }else if($request->mode_1 == "Mpesa"){
+            $order->amount_paid_by_mpesa = $request->amount_1;
+          }else if($request->mode_1 == "Bank"){
+            $order->amount_paid_by_mpesa = $request->amount_1;
+          }
+
+          if($request->mode_2 == "Cash"){
+            $order->amount_paid_by_cash = $request->amount_2;
+          }else if($request->mode_2 == "Mpesa"){
+            $order->amount_paid_by_mpesa = $request->amount_2;
+          }else if($request->mode_2 == "Bank"){
+            $order->amount_paid_by_mpesa = $request->amount_2;
+          }
+
+          if($request->mode_1 != "Cash" && $request->mode_2 != "Cash"){
+            $order->transaction_number = $request->transaction_number_1.", ".$request->transaction_number_2;
+          }else{
+            $order->transaction_number = $request->transaction_number_1.$request->transaction_number_2;
+          }
+        }else if($request->mode == "Cash"){
+            $order->payment_method = $request->mode;
+            $order->is_double_payment = 0;
         }
         $order->is_paid = 1;
-
-		  $order->update();
+        $order->payment_by = Auth::user()->id;
+        $order->tax = 0.16 * $order->amount;
+        $order->update();
 
         return Redirect::to('/waiter/orders/payments')->withFlashMessage('Order successfully paid!');
 	}
@@ -219,7 +256,7 @@ class WaiterController extends Controller
 
               });
 
-              $sheet->mergeCells('A3:F3');
+              $sheet->mergeCells('A3:K3');
               $sheet->row(3, array(
               'ORDERS REPORT BETWEEN '.$f.' AND '.$t
               ));
@@ -233,7 +270,7 @@ class WaiterController extends Controller
               });
 
               $sheet->row(5, array(
-              '#', 'ORDER NO.', 'DATE', 'AMOUNT', 'STATUS', 'PAID'
+              '#', 'ORDER NO.', 'DATE', 'AMOUNT', 'STATUS', 'PAYMENT METHOD', 'TRANSACTION NUMBER', 'PAID', 'TRANSACTED BY', 'CANCELLED BY', 'PAYMENT BY'
               ));
 
               $sheet->row(5, function ($r) {
@@ -251,22 +288,32 @@ class WaiterController extends Controller
 
             $status = '';
             $paid   = '';
+            $cancel = '';
             $total = $total + Orderitem::getAmount($orders[$i]->id);
 
             if($orders[$i]->is_cancelled == 1 ){
             $status = 'Cancelled';
-            }else{
+            }else {
             $status = 'Complete';
             }
 
-            if($orders[$i]->is_paid == 1){
+            if($orders[$i]->is_paid == 1 && $orders[$i]->is_cancelled == 0){
             $paid='Paid';
+            }else if($orders[$i]->is_paid == 0 && $orders[$i]->is_cancelled == 0){
+            $paid='Not Paid';
             }else{
             $paid='Reversed';
             }
+
+
+            if($orders[$i]->is_cancelled == 1){
+            $cancel = User::getUser($orders[$i]->cancel_id);
+            }else{
+            $cancel = '';
+            }
             
              $sheet->row($row, array(
-             ($i+1),$orders[$i]->order_no,date('d-M-Y',strtotime($orders[$i]->created_at)),Orderitem::getAmount($orders[$i]->id),$status,$paid
+             ($i+1),$orders[$i]->order_no,date('d-M-Y',strtotime($orders[$i]->created_at)),Orderitem::getAmount($orders[$i]->id),$orders[$i]->payment_method,$orders[$i]->transaction_number,$status,$paid,User::getUser($orders[$i]->waiter_id),$cancel,User::getUser($orders[$i]->payment_by) ? User::getUser($orders[$i]->payment_by) : ''
              ));
              $row++;
              }
@@ -279,7 +326,7 @@ class WaiterController extends Controller
             // call cell manipulation methods
             $r->setFontWeight('bold');
 
-            });             
+            });  
              
     });
 
@@ -319,6 +366,10 @@ class WaiterController extends Controller
         }
     }
 
+    public function paymentsreport(){
+        return view('waiter.paymentsreport');
+    }
+
     public function summaryreport(){
         return view('waiter.summaryreport');
     }
@@ -350,8 +401,16 @@ class WaiterController extends Controller
             $orders = Order::where('waiter_id',Auth::user()->id)->whereBetween('created_at', array($from, $to))->count();
             $cancelled = Order::where('waiter_id',Auth::user()->id)->whereBetween('created_at', array($from, $to))->where('is_cancelled',1)->count();
             $completed = Order::where('waiter_id',Auth::user()->id)->whereBetween('created_at', array($from, $to))->where('is_cancelled',0)->count();
-            $amount = Orderitem::where('waiter_id',Auth::user()->id)->whereBetween('created_at', array($from, $to))->where('is_cancelled',0)->sum('amount');
-              $organization = Setting::find(1);
+            $amount = DB::table('orderitems')
+                    ->join('orders','orderitems.order_id','=','orders.id')
+                    ->selectRaw('SUM(orderitems.amount * quantity) as total')
+                    ->where('orders.waiter_id',Auth::user()->id)
+                    ->where('orders.is_paid',1)
+                    ->where('orderitems.is_cancelled',0)
+                    ->whereBetween('orders.created_at', array($from, $to))
+                    ->first()->total;
+            // $amount = Orderitem::where('waiter_id',Auth::user()->id)->whereBetween('created_at', array($from, $to))->where('is_cancelled',0)->sum('amount');
+            $organization = Setting::find(1);
 
                $sheet->row(1, array(
               'Organization: ',$organization->name
@@ -414,7 +473,14 @@ class WaiterController extends Controller
         $orders = Order::where('waiter_id',Auth::user()->id)->whereBetween('created_at', array($from, $to))->count();
         $cancelled = Order::where('waiter_id',Auth::user()->id)->whereBetween('created_at', array($from, $to))->where('is_cancelled',1)->count();
         $completed = Order::where('waiter_id',Auth::user()->id)->whereBetween('created_at', array($from, $to))->where('is_cancelled',0)->count();
-        $amount = Orderitem::where('waiter_id',Auth::user()->id)->whereBetween('created_at', array($from, $to))->where('is_cancelled',0)->sum('amount');
+        $amount = DB::table('orderitems')
+                    ->join('orders','orderitems.order_id','=','orders.id')
+                    ->selectRaw('SUM(orderitems.amount * quantity) as total')
+                    ->where('orders.waiter_id',Auth::user()->id)
+                    ->where('orders.is_paid',1)
+                    ->where('orderitems.is_cancelled',0)
+                    ->whereBetween('orders.created_at', array($from, $to))
+                    ->first()->total;
         $organization = Setting::find(1);
         $view = \View::make('waiter.viewsummaryreport',compact('orders','completed','cancelled','amount','organization','f','t'));
         $html = $view->render();

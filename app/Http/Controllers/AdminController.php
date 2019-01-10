@@ -101,6 +101,7 @@ class AdminController extends Controller
           }
         }
         $order->is_paid = 1;
+        $order->payment_by = Auth::user()->id;
         $order->tax = 0.16 * $order->amount;
 		    $order->update();
 
@@ -163,7 +164,7 @@ class AdminController extends Controller
               });
 
               $sheet->row(5, array(
-              '#', 'ORDER NO.', 'DATE', 'AMOUNT', 'STATUS', 'PAID', 'TRANSACTED BY', 'CANCELLED BY'
+              '#', 'ORDER NO.', 'DATE', 'AMOUNT', 'STATUS', 'PAYMENT METHOD', 'TRANSACTION NUMBER', 'PAID', 'TRANSACTED BY', 'REVERSED BY', 'PAYMENT BY'
               ));
 
               $sheet->row(5, function ($r) {
@@ -206,7 +207,7 @@ class AdminController extends Controller
             }
             
              $sheet->row($row, array(
-             ($i+1),$orders[$i]->order_no,date('d-M-Y',strtotime($orders[$i]->created_at)),Orderitem::getAmount($orders[$i]->id),$status,$paid,User::getUser($orders[$i]->waiter_id),$cancel
+             ($i+1),$orders[$i]->order_no,date('d-M-Y',strtotime($orders[$i]->created_at)),Orderitem::getAmount($orders[$i]->id),$orders[$i]->payment_method,$orders[$i]->transaction_number,$status,$paid,User::getUser($orders[$i]->waiter_id),$cancel,User::getUser($orders[$i]->payment_by) ? User::getUser($orders[$i]->payment_by) : ''
              ));
              $row++;
              }
@@ -297,33 +298,42 @@ class AdminController extends Controller
               $s = '';
 
               if(Order::getOrder($id)->is_cancelled == 1){
-              $s = 'Cancelled';
+              $s = 'Reversed';
+              }else if(Order::getOrder($id)->is_paid == 1){
+              $s = 'Paid';
               }else {
               $s = 'Complete';
               }
 
-              $sheet->mergeCells('A3:I3');
-              $sheet->row(3, array(
-              $order->order_no.' REPORT STATUS: '.$s
+              $sheet->row(2, array(
+              'ORDER NUMBER: ',$order->order_no
               ));
 
-              $sheet->row(3, function($cell) {
+              $sheet->cell('A2', function($cell) {
 
                // manipulate the cell
-                $cell->setAlignment('center');
                 $cell->setFontWeight('bold');
 
               });
 
-              $sheet->mergeCells('A4:I4');
-              $sheet->row(4, array(
-              'STATUS: '.$s
+              $sheet->row(3, array(
+              'STATUS: ',$s
               ));
 
-              $sheet->row(4, function($cell) {
+              $sheet->cell('A3', function($cell) {
+
+               // manipulate the cell;
+                $cell->setFontWeight('bold');
+
+              });
+
+              $sheet->row(4, array(
+              'PAYMENT BY: ',User::getUser(Order::getOrder($id)->payment_by) ? User::getUser(Order::getOrder($id)->payment_by) : ""
+              ));
+
+              $sheet->cell('A4', function($cell) {
 
                // manipulate the cell
-                $cell->setAlignment('center');
                 $cell->setFontWeight('bold');
 
               });
@@ -353,7 +363,7 @@ class AdminController extends Controller
             $total    = $total    + ($orderitems[$i]->quantity * $orderitems[$i]->amount);
 
             if(Order::getOrder($id)->is_cancelled == 1){
-            $status = 'Cancelled';
+            $status = 'Reversed';
             }else {
             $status = 'Complete';
             }
@@ -482,7 +492,7 @@ class AdminController extends Controller
 
               });
 
-              $sheet->mergeCells('A3:H3');
+              $sheet->mergeCells('A3:G3');
               $sheet->row(3, array(
               'PAYMENTS REPORT BETWEEN '.$f.' AND '.$t
               ));
@@ -496,7 +506,7 @@ class AdminController extends Controller
               });
 
               $sheet->row(5, array(
-              '#', 'ORDER NO.', 'DATE', 'AMOUNT', 'PAYMENT METHOD', 'TRANSACTION NUMBER', 'AMOUNT PAID', 'TRANSACTED BY'
+              '#', 'ORDER NO.', 'DATE', 'AMOUNT', 'PAYMENT METHOD', 'TRANSACTION NUMBER', 'TRANSACTED BY'
               ));
 
               $sheet->row(5, function ($r) {
@@ -510,23 +520,21 @@ class AdminController extends Controller
             $total = 0;
             $amount = '';
              
-            if($order->is_paid == 0 && $order->is_cancelled == 0){
-            $amount = 'Not Paid';
-            }elseif($order->is_cancelled == 1){
-            $amount = 'Reversed';
-            }else{
-            $amount = number_format(App\Orderitem::getAmount($order->id),2);
-            }
-             
              for($i = 0; $i<count($orders); $i++){
+              if($orders[$i]->is_paid == 0 && $orders[$i]->is_cancelled == 0){
+                $amount = 'Not Paid';
+              }elseif($orders[$i]->is_cancelled == 1){
+                $amount = 'Reversed';
+              }else{
+                $amount = number_format(Orderitem::getAmount($orders[$i]->id),2);
+              }
              $total = $total + Orderitem::getAmount($orders[$i]->id);
              $sheet->row($row, array(
-             ($i+1),$orders[$i]->order_no,date('d-M-Y',strtotime($orders[$i]->created_at)),$amount,$orders[$i]->payment_method,$orders[$i]->transaction_number,$orders[$i]->amount_paid,User::getUser($orders[$i]->waiter_id)
+             ($i+1),$orders[$i]->order_no,date('d-M-Y',strtotime($orders[$i]->created_at)),$amount,$orders[$i]->payment_method,$orders[$i]->transaction_number,User::getUser($orders[$i]->waiter_id)
              ));
              $row++;
-             }
-
-             $sheet->row($row, array(
+            }
+            $sheet->row($row, array(
              '','','Total',$total
              ));
             $sheet->row($row, function ($r) {
@@ -534,7 +542,7 @@ class AdminController extends Controller
             // call cell manipulation methods
             $r->setFontWeight('bold');
 
-            });             
+           });         
              
     });
 
@@ -654,7 +662,7 @@ class AdminController extends Controller
               });
 
               $sheet->row(5, array(
-              '#','WAITER','COMPLETED ORDERS', 'CANCELLED ORDERS', 'TOTAL ORDERS', 'TOTAL AMOUNT HELD'
+              '#','USER','COMPLETED ORDERS', 'CANCELLED ORDERS', 'TOTAL ORDERS', 'TOTAL AMOUNT HELD'
               ));
 
               $sheet->row(5, function ($r) {

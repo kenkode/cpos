@@ -52,7 +52,10 @@
                   Status: Cancelled
                   @else
                   Status: Complete
-                  @endif</strong></div><br>
+                  @endif
+                <br>
+            Payment by: {{App\User::getUser(App\Order::getOrder($id)->payment_by) ? App\User::getUser(App\Order::getOrder($id)->payment_by) : ""}}
+          </strong></div><br>
     <table class="table tafter" border="1" cellspacing="0" cellpadding="0">
 
       <tr>
@@ -88,7 +91,7 @@
                   <td>{{number_format($orderitem->amount,2)}}</td>
                   <td>{{number_format($orderitem->amount * $orderitem->quantity,2)}}</td>
                   @if(App\Order::getOrder($id)->is_cancelled == 1)
-                  <td><span class="label label-danger">Cancelled</span></td>
+                  <td><span class="label label-danger">Reversed</span></td>
                   @else
                   <td><span class="label label-success">Complete</span></td>
                   @endif

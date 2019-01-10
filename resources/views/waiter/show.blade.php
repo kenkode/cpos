@@ -133,8 +133,8 @@
                     <td></td>
                     <td></td>
                     <td><strong>{{$quantity}}</strong></td>
-                    <td><strong>{{number_format($amount,2)}}</strong></td>
-                    <td><strong>{{number_format($total,2)}}</strong></td>
+                    <!-- <td><strong>{{number_format($amount,2)}}</strong></td> -->
+                    <td colspan="2" align="right"><strong>KES {{number_format($total,2)}}</strong></td>
                     <td></td>
                     <td></td>
                     @if(App\Order::getOrder($id)->is_paid == 0)

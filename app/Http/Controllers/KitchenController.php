@@ -109,7 +109,7 @@ class KitchenController extends Controller
       $order->cancel_id = Auth::user()->id;
       $order->update();
 
-      return redirect()->back()->withFlashMessage('Order Successfully Cancelled!');
+      return redirect()->back()->withFlashMessage('Order Successfully Reversed!');
     }
 
     public function cancelorderitem($id){
@@ -118,7 +118,7 @@ class KitchenController extends Controller
       $order->cancel_id = Auth::user()->id;
       $order->update();
 
-      return redirect()->back()->withFlashMessage('Order Successfully Cancelled!');
+      return redirect()->back()->withFlashMessage('Order Successfully Reversed!');
     }
 
     public function report(){

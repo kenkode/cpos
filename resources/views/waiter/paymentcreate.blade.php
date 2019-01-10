@@ -4,12 +4,58 @@
 
 <script type="text/javascript">
   $(document).ready(function(){
-  $(".transaction_number").hide();
-  $("#mode").on("change", function(){
-        if($(this).val() != "Cash"){
+    $(".transaction_number").hide();
+    $(".payment_mode_div").hide();
+    $(".amount_div").hide();
+    $(".transaction_number_1").hide();
+    $(".transaction_number_2").hide();
+    $("#mode").on("change", function(){
+        if($(this).val() != "Cash" && $(this).val() != "Double Payment"){
             $(".transaction_number").show();
+        }else if($(this).val() == "Double Payment"){
+            $(".transaction_number").hide();
+            $(".payment_mode_div").show();
+            $(".amount_div").show();
         }else{
             $(".transaction_number").hide();
+            $(".payment_mode_div").hide();
+            $(".amount_div").hide();
+        }
+    });
+    $("#mode_1").on("change", function(){
+        if($(this).val() != "Cash"){
+            $(".transaction_number_1").show();
+        }else{
+            $(".transaction_number_1").hide();
+        }
+    });
+
+    $('body').on("keyup",".amount_1",function(){
+      if(parseFloat($('.amount_1').val().replace(/[^\d.]/g,"")) > parseFloat($('#total').val())){
+        $('.amount_1').val(0.00);
+        $('.amount_2').val(0.00);
+
+        alert("Amount entered exceeds the order amount!")
+      }else{
+        $('.amount_2').val($('#total').val() - $('.amount_1').val().replace(/[^\d.]/g,""));
+      }
+    })
+
+    $('body').on('keyup','.amount_2',function(){
+      if(parseFloat($('.amount_2').val().replace(/[^\d.]/g,"")) > parseFloat($('#total').val())){
+        $('.amount_1').val(0.00);
+        $('.amount_2').val(0.00);
+        alert("Amount entered exceeds the order amount!")
+      }else{
+        $('.amount_1').val($('#total').val() - $('.amount_2').val().replace(/[^\d.]/g,""));
+      }
+    })
+
+    $("#mode_2").on("change", function(){
+        if($(this).val() != "Cash"){
+            $(".transaction_number_2").show();
+        }else{
+            $(".transaction_number_2").hide();
         }
     });
   });
@@ -49,25 +95,66 @@
 
                 <div class="form-group">
                     <label>Order No. <span style="color: red">*</span></label><br>
-                    <select class="form-control select2" style="width: 30%;" required="" name="order">
+                    <select class="form-control select2" style="width: 60%;" required="" name="order">
                         @foreach($orders as $order)
                         <option value="{{$order->id}}">{{$order->order_no." - amount (Ksh. ".number_format($order->amount,2).")"}}</option>
                         @endforeach
                     </select>
                 </div>
 
+                <input type="hidden" id="total" value="{{$order->amount}}">
+
                 <div class="form-group">
                   <label for="exampleInputEmail1">Mode of Payment <span style="color: red">*</span></label><br>
-                  <select class="form-control select2" style="width: 30%;" required="" name="mode" id="mode">
+                  <select class="form-control select2" style="width: 60%;" required="" name="mode" id="mode">
+                    <option value="Cash">Cash</option>
+                    <option value="Mpesa">Mpesa</option>
+                    <option value="Bank">Bank</option>
+                    <option value="Double Payment">Double Payment</option>
+                  </select>
+                </div>
+
+                <div class="form-group payment_mode_div">
+                  <label for="exampleInputEmail1">Mode of Payment <span style="color: red">*</span></label><br>
+                  <select class="form-control select2" style="width: 60%;" required="" name="mode_1" id="mode_1">
                     <option value="Cash">Cash</option>
                     <option value="Mpesa">Mpesa</option>
                     <option value="Bank">Bank</option>
                    </select>
                 </div>
 
+                <div class="form-group transaction_number_1">
+                  <label for="exampleInputEmail1">Transaction Number</label>
+                  <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Transaction Number"style="width: 60%;" value="{{old('transaction_number_1')}}" name="transaction_number_1">
+                </div>
+
+                <div class="form-group amount_div">
+                  <label for="exampleInputEmail1">Amount</label>
+                  <input type="text" class="form-control amount_1" id="exampleInputEmail1" placeholder="Amount"style="width: 60%;" value="{{old('amount_1')}}" name="amount_1">
+                </div>
+
+                <div class="form-group payment_mode_div">
+                  <label for="exampleInputEmail1">Mode of Payment <span style="color: red">*</span></label><br>
+                  <select class="form-control select2" style="width: 60%;" required="" name="mode_2" id="mode_2">
+                    <option value="Cash">Cash</option>
+                    <option value="Mpesa">Mpesa</option>
+                    <option value="Bank">Bank</option>
+                   </select>
+                </div>
+
+                <div class="form-group transaction_number_2">
+                  <label for="exampleInputEmail1">Transaction Number</label>
+                  <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Transaction Number"style="width: 60%;" value="{{old('transaction_number_2')}}" name="transaction_number_2">
+                </div>
+
+                <div class="form-group amount_div">
+                  <label for="exampleInputEmail1">Amount</label>
+                  <input type="text" class="form-control amount_2" id="exampleInputEmail1" placeholder="Amount"style="width: 60%;" value="{{old('amount_2')}}" name="amount_2">
+                </div>
+
                 <div class="form-group transaction_number">
                   <label for="exampleInputEmail1">Transaction Number</label>
-                  <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Transaction Number" style="width: 30%" value="{{old('transaction_number')}}" name="transaction_number">
+                  <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Transaction Number"style="width: 60%;" value="{{old('transaction_number')}}" name="transaction_number">
                 </div>
                 
               <!-- /.box-body -->
